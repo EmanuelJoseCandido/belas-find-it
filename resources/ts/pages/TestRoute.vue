@@ -1,7 +1,3 @@
 <template>
-    <q-btn label="Clique Aqui" color="primary" />
+    <div class="bg-blue-500 text-white p-4">Hello, Tailwind!</div>
 </template>
-
-<script setup>
-import { QBtn } from "quasar"; // Importe os componentes do Quasar que você precisa
-</script>

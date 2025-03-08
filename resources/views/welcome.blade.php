@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    @vite(['resources/ts/app.ts'])
+    @vite(['resources/css/app.css', 'resources/ts/app.ts'])
 </head>
 
 <body>
