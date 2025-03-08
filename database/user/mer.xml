@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Database name="LostAndFoundBelas">
+    <Table name="users">
+        <Column name="id" type="BIGINT" primaryKey="true" autoIncrement="true" />
+        <Column name="name" type="VARCHAR(255)" notNull="true" />
+        <Column name="email" type="VARCHAR(255)" unique="true" notNull="true" />
+        <Column name="password" type="VARCHAR(255)" notNull="true" />
+        <Column name="role" type="ENUM('admin', 'moderator', 'user')" default="'user'" />
+        <Column name="created_at" type="TIMESTAMP" default="CURRENT_TIMESTAMP" />
+        <Column name="updated_at" type="TIMESTAMP" default="CURRENT_TIMESTAMP" />
+        <Column name="deleted_at" type="TIMESTAMP" />
+    </Table>
+
+    <Table name="categories">
+        <Column name="id" type="BIGINT" primaryKey="true" autoIncrement="true" />
+        <Column name="name" type="VARCHAR(255)" unique="true" notNull="true" />
+        <Column name="created_at" type="TIMESTAMP" default="CURRENT_TIMESTAMP" />
+        <Column name="updated_at" type="TIMESTAMP" default="CURRENT_TIMESTAMP" />
+        <Column name="deleted_at" type="TIMESTAMP" />
+    </Table>
+
+    <Table name="items">
+        <Column name="id" type="BIGINT" primaryKey="true" autoIncrement="true" />
+        <Column name="title" type="VARCHAR(255)" notNull="true" />
+        <Column name="description" type="TEXT" notNull="true" />
+        <Column name="category_id" type="BIGINT" foreignKey="categories(id)" />
+        <Column name="location" type="VARCHAR(255)" />
+        <Column name="status" type="ENUM('perdido', 'achado', 'resgatado')" default="'perdido'" />
+        <Column name="image" type="VARCHAR(255)" />
+        <Column name="user_id" type="BIGINT" foreignKey="users(id)" />
+        <Column name="found_date" type="DATE" />
+        <Column name="created_at" type="TIMESTAMP" default="CURRENT_TIMESTAMP" />
+        <Column name="updated_at" type="TIMESTAMP" default="CURRENT_TIMESTAMP" />
+        <Column name="deleted_at" type="TIMESTAMP" />
+    </Table>
+
+    <Table name="claims">
+        <Column name="id" type="BIGINT" primaryKey="true" autoIncrement="true" />
+        <Column name="item_id" type="BIGINT" notNull="true" foreignKey="items(id)" />
+        <Column name="user_id" type="BIGINT" notNull="true" foreignKey="users(id)" />
+        <Column name="status" type="ENUM('pendente', 'aprovado', 'rejeitado')" default="'pendente'" />
+        <Column name="message" type="TEXT" />
+        <Column name="created_at" type="TIMESTAMP" default="CURRENT_TIMESTAMP" />
+        <Column name="updated_at" type="TIMESTAMP" default="CURRENT_TIMESTAMP" />
+        <Column name="deleted_at" type="TIMESTAMP" />
+    </Table>
+</Database>
