@@ -12,6 +12,10 @@
         "checkJs": true,
         "types": ["vite/client", "vue"]
     },
-    "include": ["resources/ts/**/*.ts", "src/**/*", "shims-vue.d.ts"],
+    "include": [
+        "resources/ts/**/*.ts",
+        "src/**/*",
+        "resources/ts/shims-vue.d.ts"
+    ],
     "exclude": ["node_modules"]
 }
