@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html>
 
 <head>
-    @vite(['resources/js/app.js'])
+    @vite(['resources/ts/app.ts'])
 </head>
 
 <body>
