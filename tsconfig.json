@@ -1,0 +1,21 @@
+{
+    "compilerOptions": {
+      "target": "esnext",                   // Define a versão do ECMAScript de saída.
+      "module": "esnext",                   // Define o módulo de saída (usado com ES Modules).
+      "moduleResolution": "node",           // Resolve módulos usando a resolução de módulos do Node.js.
+      "strict": true,                       // Habilita checagem rigorosa de tipos.
+      "esModuleInterop": true,              // Permite importar módulos CommonJS no estilo ES6.
+      "skipLibCheck": true,                 // Ignora verificações de tipos nas bibliotecas.
+      "forceConsistentCasingInFileNames": true, // Garante que o nome dos arquivos seja consistente.
+      "outDir": "./public/build",           // Diretório de saída dos arquivos compilados.
+      "allowJs": true,                      // Permite o uso de arquivos JavaScript ao lado de TypeScript.
+      "checkJs": true                       // Faz a verificação de tipos nos arquivos JS também, caso necessário.
+    },
+    "include": [
+      "resources/js/**/*.ts",  // Inclui todos os arquivos .ts dentro de resources/js
+      "resources/js/**/*.tsx"  // Inclui arquivos .tsx caso você também use JSX com TypeScript
+    ],
+    "exclude": [
+      "node_modules"  // Exclui o diretório node_modules.
+    ]
+  }
