@@ -10,7 +10,11 @@
         "outDir": "./public/build",
         "allowJs": true,
         "checkJs": true,
-        "types": ["vite/client", "vue"]
+        "types": ["vite/client", "vue"],
+        "baseUrl": ".",
+        "paths": {
+            "@/*": ["./resources/ts/*"]
+        }
     },
     "include": [
         "resources/ts/**/*.ts",
