@@ -1,309 +1,493 @@
 <template>
-    <div class="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100">
-      <!-- Header -->
-      <header class="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div class="container flex h-16 items-center">
-          <RouterLink to="/" class="flex items-center">
-            <KeyIcon class="w-6 h-6 mr-2 text-primary" />
-            <span class="font-bold text-xl">EncontraMunicipal</span>
-          </RouterLink>
-          <nav class="ml-auto flex gap-6">
-            <RouterLink to="/" class="text-sm font-medium transition-colors hover:text-primary">Início</RouterLink>
-            <RouterLink to="/perdidos" class="text-sm font-medium transition-colors hover:text-primary">Perdidos</RouterLink>
-            <RouterLink to="/achados" class="text-sm font-medium transition-colors hover:text-primary">Achados</RouterLink>
-            <RouterLink to="/cadastrar" class="text-sm font-medium transition-colors hover:text-primary">Cadastrar Item</RouterLink>
-            <RouterLink to="/contato" class="text-sm font-medium transition-colors hover:text-primary">Contato</RouterLink>
-          </nav>
-          <div class="ml-4 flex items-center gap-4">
-            <Button variant="outline" size="sm" class="hidden md:flex">
-              <UserIcon class="mr-2 h-4 w-4" />
-              Entrar
-            </Button>
-            <Button size="sm" class="hidden md:flex">Cadastrar-se</Button>
-          </div>
-        </div>
-      </header>
-  
-      <!-- Hero Section -->
-      <section class="container py-16 md:py-24">
-        <div class="grid gap-6 lg:grid-cols-2 lg:gap-12 items-center">
-          <div class="space-y-4">
-            <div class="inline-block rounded-lg bg-primary/10 px-3 py-1 text-sm text-primary">
-              Novo Serviço Municipal
+    <WebsiteLayout>
+        <!-- Hero Section -->
+        <section class="relative">
+            <div
+                class="bg-gradient-to-r from-primary/90 to-primary text-white py-16 md:py-24 px-20"
+            >
+                <div class="container relative z-10">
+                    <div class="max-w-2xl">
+                        <h1 class="text-3xl md:text-5xl font-bold mb-4">
+                            Encontre e recupere seus pertences perdidos
+                        </h1>
+                        <p class="text-lg mb-8 text-white/90">
+                            Nossa plataforma de perdidos e achados municipal
+                            conecta você aos seus itens. Cadastre itens perdidos
+                            ou encontrados e ajude nossa comunidade.
+                        </p>
+                        <div class="flex flex-wrap gap-4">
+                            <RouterLink to="/perdidos">
+                                <Button size="lg" variant="secondary"
+                                    >Ver Itens Perdidos</Button
+                                >
+                            </RouterLink>
+                            <RouterLink to="/achados">
+                                <Button
+                                    size="lg"
+                                    variant="outline"
+                                    class="bg-transparent text-white border-white hover:bg-white/10"
+                                    >Ver Itens Achados</Button
+                                >
+                            </RouterLink>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <h1 class="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl">
-              Perdeu ou Encontrou Algo?
-            </h1>
-            <p class="text-muted-foreground text-lg md:text-xl">
-              Ajudamos você a reencontrar itens perdidos ou devolver objetos encontrados no município.
-            </p>
-            <div class="flex flex-col sm:flex-row gap-3">
-              <Button size="lg">
-                <SearchIcon class="mr-2 h-4 w-4" />
-                Procurar Item Perdido
-              </Button>
-              <Button size="lg" variant="outline">
-                <PlusIcon class="mr-2 h-4 w-4" />
-                Cadastrar Item Encontrado
-              </Button>
+        </section>
+
+        <!-- Stats Section -->
+        <section class="py-12 bg-background">
+            <div class="container">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
+                    <div class="bg-white rounded-lg p-6 text-center shadow-sm">
+                        <p class="text-3xl font-bold text-primary mb-1">
+                            {{ stats.totalItems }}
+                        </p>
+                        <p class="text-muted-foreground">Itens Cadastrados</p>
+                    </div>
+                    <div class="bg-white rounded-lg p-6 text-center shadow-sm">
+                        <p class="text-3xl font-bold text-primary mb-1">
+                            {{ stats.lostItems }}
+                        </p>
+                        <p class="text-muted-foreground">Itens Perdidos</p>
+                    </div>
+                    <div class="bg-white rounded-lg p-6 text-center shadow-sm">
+                        <p class="text-3xl font-bold text-primary mb-1">
+                            {{ stats.foundItems }}
+                        </p>
+                        <p class="text-muted-foreground">Itens Achados</p>
+                    </div>
+                    <div class="bg-white rounded-lg p-6 text-center shadow-sm">
+                        <p class="text-3xl font-bold text-primary mb-1">
+                            {{ stats.recoveredItems }}
+                        </p>
+                        <p class="text-muted-foreground">Itens Recuperados</p>
+                    </div>
+                </div>
             </div>
-          </div>
-          <div class="relative">
-            <div class="absolute -top-12 -left-12 h-72 w-72 rounded-full bg-primary/20 blur-3xl"></div>
-            <img
-              src="/api/placeholder/600/400"
-              alt="Ilustração de perdidos e achados"
-              class="mx-auto w-full max-w-lg rounded-lg object-cover shadow-xl"
-            />
-          </div>
-        </div>
-      </section>
-  
-      <!-- Como Funciona -->
-      <section class="container py-12 md:py-16">
-        <h2 class="text-3xl font-bold text-center mb-10">Como Funciona</h2>
-        <div class="grid md:grid-cols-3 gap-8">
-          <div class="relative group">
-            <div class="absolute inset-0 bg-gradient-to-r from-primary/60 to-primary/50 rounded-lg blur-sm group-hover:blur transition-all duration-500"></div>
-            <div class="relative p-6 bg-white rounded-lg shadow-lg">
-              <div class="rounded-full bg-primary/10 w-12 h-12 flex items-center justify-center mb-4">
-                <ClipboardListIcon class="h-6 w-6 text-primary" />
-              </div>
-              <h3 class="text-xl font-bold mb-2">1. Cadastre</h3>
-              <p class="text-muted-foreground">Cadastre o item perdido ou encontrado com detalhes e fotos.</p>
+        </section>
+
+        <!-- How It Works Section -->
+        <section class="py-16 px-20 bg-muted/50">
+            <div class="container">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold mb-4">Como Funciona</h2>
+                    <p class="text-muted-foreground max-w-2xl mx-auto">
+                        Nossa plataforma conecta pessoas que perderam seus
+                        pertences com aquelas que encontraram algo. Veja como é
+                        fácil utilizar o sistema.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="bg-white p-6 rounded-lg shadow-sm">
+                        <div class="flex justify-center mb-4">
+                            <div
+                                class="bg-primary/10 w-16 h-16 rounded-full flex items-center justify-center"
+                            >
+                                <ClipboardListIcon
+                                    class="h-8 w-8 text-primary"
+                                />
+                            </div>
+                        </div>
+                        <h3 class="text-xl font-semibold text-center mb-2">
+                            1. Cadastre o Item
+                        </h3>
+                        <p class="text-center text-muted-foreground">
+                            Perdeu algo? Registre detalhes como local, data e
+                            características. Encontrou algo? Cadastre para que o
+                            dono possa localizar.
+                        </p>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-lg shadow-sm">
+                        <div class="flex justify-center mb-4">
+                            <div
+                                class="bg-primary/10 w-16 h-16 rounded-full flex items-center justify-center"
+                            >
+                                <SearchIcon class="h-8 w-8 text-primary" />
+                            </div>
+                        </div>
+                        <h3 class="text-xl font-semibold text-center mb-2">
+                            2. Busque na Plataforma
+                        </h3>
+                        <p class="text-center text-muted-foreground">
+                            Utilize nossos filtros avançados para buscar itens
+                            por categoria, localização, data ou palavras-chave.
+                        </p>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-lg shadow-sm">
+                        <div class="flex justify-center mb-4">
+                            <div
+                                class="bg-primary/10 w-16 h-16 rounded-full flex items-center justify-center"
+                            >
+                                <MessageSquareIcon
+                                    class="h-8 w-8 text-primary"
+                                />
+                            </div>
+                        </div>
+                        <h3 class="text-xl font-semibold text-center mb-2">
+                            3. Entre em Contato
+                        </h3>
+                        <p class="text-center text-muted-foreground">
+                            Encontrou seu item ou é dono de algo achado? Entre
+                            em contato para combinar a devolução de forma
+                            segura.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="text-center mt-12">
+                    <RouterLink to="/cadastrar">
+                        <Button size="lg">Cadastrar um Item</Button>
+                    </RouterLink>
+                </div>
             </div>
-          </div>
-          <div class="relative group">
-            <div class="absolute inset-0 bg-gradient-to-r from-amber-500/60 to-amber-500/50 rounded-lg blur-sm group-hover:blur transition-all duration-500"></div>
-            <div class="relative p-6 bg-white rounded-lg shadow-lg">
-              <div class="rounded-full bg-amber-500/10 w-12 h-12 flex items-center justify-center mb-4">
-                <SearchIcon class="h-6 w-6 text-amber-500" />
-              </div>
-              <h3 class="text-xl font-bold mb-2">2. Procure</h3>
-              <p class="text-muted-foreground">Encontre correspondências entre itens perdidos e achados.</p>
+        </section>
+
+        <!-- Recent Items Section -->
+        <section class="py-16 px-20">
+            <div class="container">
+                <div class="flex justify-between items-center mb-8">
+                    <h2 class="text-2xl font-bold">Itens Recentes</h2>
+                    <div class="flex gap-2">
+                        <Button
+                            variant="outline"
+                            :class="{
+                                'bg-primary text-white hover:bg-primary/90':
+                                    activeTab === 'todos',
+                            }"
+                            @click="setActiveTab('todos')"
+                        >
+                            Todos
+                        </Button>
+                        <Button
+                            variant="outline"
+                            :class="{
+                                'bg-primary text-white hover:bg-primary/90':
+                                    activeTab === 'perdidos',
+                            }"
+                            @click="setActiveTab('perdidos')"
+                        >
+                            Perdidos
+                        </Button>
+                        <Button
+                            variant="outline"
+                            :class="{
+                                'bg-primary text-white hover:bg-primary/90':
+                                    activeTab === 'achados',
+                            }"
+                            @click="setActiveTab('achados')"
+                        >
+                            Achados
+                        </Button>
+                    </div>
+                </div>
+
+                <div v-if="isLoading" class="py-12 flex justify-center">
+                    <div
+                        class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"
+                    ></div>
+                </div>
+
+                <div
+                    v-else-if="filteredItems.length === 0"
+                    class="py-12 text-center"
+                >
+                    <FileSearchIcon
+                        class="mx-auto h-12 w-12 text-muted-foreground mb-4"
+                    />
+                    <h3 class="text-lg font-medium mb-2">
+                        Nenhum item encontrado
+                    </h3>
+                    <p class="text-muted-foreground">
+                        Não há itens cadastrados nesta categoria no momento.
+                    </p>
+                </div>
+
+                <div
+                    v-else
+                    class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
+                >
+                    <ItemCard
+                        v-for="item in filteredItems"
+                        :key="item.id"
+                        :item="item"
+                    />
+                </div>
+
+                <div class="text-center mt-8">
+                    <RouterLink
+                        :to="
+                            activeTab === 'todos'
+                                ? '/perdidos'
+                                : `/${activeTab}`
+                        "
+                    >
+                        <Button variant="outline">Ver Mais Itens</Button>
+                    </RouterLink>
+                </div>
             </div>
-          </div>
-          <div class="relative group">
-            <div class="absolute inset-0 bg-gradient-to-r from-emerald-600/60 to-emerald-600/50 rounded-lg blur-sm group-hover:blur transition-all duration-500"></div>
-            <div class="relative p-6 bg-white rounded-lg shadow-lg">
-              <div class="rounded-full bg-emerald-600/10 w-12 h-12 flex items-center justify-center mb-4">
-                <HeartIcon class="h-6 w-6 text-emerald-600" />
-              </div>
-              <h3 class="text-xl font-bold mb-2">3. Recupere</h3>
-              <p class="text-muted-foreground">Entre em contato e combine a devolução do item de forma segura.</p>
+        </section>
+
+        <!-- Testimonials Section -->
+        <section class="py-16 px-20 bg-muted/50">
+            <div class="container">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold mb-4">Depoimentos</h2>
+                    <p class="text-muted-foreground max-w-2xl mx-auto">
+                        Conheça histórias de pessoas que recuperaram seus
+                        pertences através da nossa plataforma.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <Card
+                        v-for="(testimonial, index) in testimonials"
+                        :key="index"
+                    >
+                        <CardContent class="pt-6">
+                            <div class="flex items-center gap-4 mb-4">
+                                <Avatar>
+                                    <AvatarImage
+                                        :src="`/api/placeholder/${40 + index}/${
+                                            40 + index
+                                        }`"
+                                    />
+                                    <AvatarFallback>{{
+                                        getInitials(testimonial.name)
+                                    }}</AvatarFallback>
+                                </Avatar>
+                                <div>
+                                    <p class="font-medium">
+                                        {{ testimonial.name }}
+                                    </p>
+                                    <p class="text-sm text-muted-foreground">
+                                        {{ testimonial.role }}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <p class="italic text-muted-foreground">
+                                "{{ testimonial.content }}"
+                            </p>
+                        </CardContent>
+                    </Card>
+                </div>
             </div>
-          </div>
-        </div>
-      </section>
-  
-      <!-- Itens Recentes -->
-      <section class="container py-12 md:py-16">
-        <div class="flex items-center justify-between mb-6">
-          <h2 class="text-3xl font-bold">Itens Recentes</h2>
-          <Button variant="outline">Ver Todos</Button>
-        </div>
-        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          <Card>
-            <CardHeader>
-              <Badge variant="secondary">Perdido</Badge>
-              <CardTitle class="mt-2">Carteira Marrom</CardTitle>
-              <CardDescription>Perdida no Parque Central</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <img
-                src="/api/placeholder/300/200"
-                alt="Carteira"
-                class="w-full rounded-md object-cover"
-              />
-              <div class="mt-4 flex items-center text-muted-foreground text-sm">
-                <CalendarIcon class="mr-1 h-4 w-4" />
-                <span>Hoje</span>
-                <MapPinIcon class="ml-4 mr-1 h-4 w-4" />
-                <span>Parque Central</span>
-              </div>
-            </CardContent>
-            <CardFooter>
-              <Button variant="outline" class="w-full">Ver Detalhes</Button>
-            </CardFooter>
-          </Card>
-          <Card>
-            <CardHeader>
-              <Badge variant="success">Achado</Badge>
-              <CardTitle class="mt-2">Óculos de Sol</CardTitle>
-              <CardDescription>Encontrado na Praça Principal</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <img
-                src="/api/placeholder/300/200"
-                alt="Óculos"
-                class="w-full rounded-md object-cover"
-              />
-              <div class="mt-4 flex items-center text-muted-foreground text-sm">
-                <CalendarIcon class="mr-1 h-4 w-4" />
-                <span>Ontem</span>
-                <MapPinIcon class="ml-4 mr-1 h-4 w-4" />
-                <span>Praça Principal</span>
-              </div>
-            </CardContent>
-            <CardFooter>
-              <Button variant="outline" class="w-full">Ver Detalhes</Button>
-            </CardFooter>
-          </Card>
-          <Card>
-            <CardHeader>
-              <Badge variant="secondary">Perdido</Badge>
-              <CardTitle class="mt-2">Chaves com Chaveiro</CardTitle>
-              <CardDescription>Perdidas no Terminal de Ônibus</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <img
-                src="/api/placeholder/300/200"
-                alt="Chaves"
-                class="w-full rounded-md object-cover"
-              />
-              <div class="mt-4 flex items-center text-muted-foreground text-sm">
-                <CalendarIcon class="mr-1 h-4 w-4" />
-                <span>Há 2 dias</span>
-                <MapPinIcon class="ml-4 mr-1 h-4 w-4" />
-                <span>Terminal de Ônibus</span>
-              </div>
-            </CardContent>
-            <CardFooter>
-              <Button variant="outline" class="w-full">Ver Detalhes</Button>
-            </CardFooter>
-          </Card>
-        </div>
-      </section>
-  
-      <!-- Estatísticas -->
-      <section class="container py-12 md:py-16 bg-primary/5 -mx-4 px-4 rounded-lg">
-        <h2 class="text-3xl font-bold text-center mb-10">Impacto na Comunidade</h2>
-        <div class="grid md:grid-cols-3 gap-8 text-center">
-          <div>
-            <div class="text-4xl font-bold text-primary mb-2">147</div>
-            <p class="text-muted-foreground">Itens Recuperados</p>
-          </div>
-          <div>
-            <div class="text-4xl font-bold text-primary mb-2">234</div>
-            <p class="text-muted-foreground">Itens Cadastrados</p>
-          </div>
-          <div>
-            <div class="text-4xl font-bold text-primary mb-2">92%</div>
-            <p class="text-muted-foreground">Taxa de Sucesso</p>
-          </div>
-        </div>
-      </section>
-  
-      <!-- Depoimentos -->
-      <section class="container py-12 md:py-16">
-        <h2 class="text-3xl font-bold text-center mb-10">Depoimentos</h2>
-        <div class="grid md:grid-cols-2 gap-8">
-          <Card>
-            <CardContent class="pt-6">
-              <blockquote class="space-y-2">
-                <p class="text-muted-foreground">
-                  "Perdi minha carteira com todos os documentos e dinheiro no centro da cidade. 
-                  Graças a esta plataforma consegui recuperar tudo intacto no mesmo dia!"
+        </section>
+
+        <!-- CTA Section -->
+        <section class="py-16 bg-primary text-white">
+            <div class="container text-center">
+                <h2 class="text-3xl font-bold mb-4">
+                    Perdeu ou encontrou algo?
+                </h2>
+                <p class="text-lg mb-8 text-white/90 max-w-2xl mx-auto">
+                    Não perca tempo! Cadastre itens perdidos ou encontrados em
+                    nossa plataforma e aumente as chances de recuperação.
                 </p>
-              </blockquote>
-              <div class="flex items-center mt-4">
-                <div class="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-                  <UserIcon class="h-5 w-5 text-primary" />
+                <div class="flex flex-wrap justify-center gap-4">
+                    <RouterLink to="/cadastrar">
+                        <Button size="lg" variant="secondary"
+                            >Cadastrar um Item</Button
+                        >
+                    </RouterLink>
+                    <RouterLink to="/sobre">
+                        <Button
+                            size="lg"
+                            variant="outline"
+                            class="bg-transparent text-white border-white hover:bg-white/10"
+                            >Saiba Mais</Button
+                        >
+                    </RouterLink>
                 </div>
-                <div class="ml-3">
-                  <p class="font-semibold">Ana Silva</p>
-                  <p class="text-sm text-muted-foreground">Moradora</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent class="pt-6">
-              <blockquote class="space-y-2">
-                <p class="text-muted-foreground">
-                  "Encontrei um celular no parque e não sabia como encontrar o dono. 
-                  Cadastrei aqui e em menos de 24 horas consegui devolvê-lo."
-                </p>
-              </blockquote>
-              <div class="flex items-center mt-4">
-                <div class="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-                  <UserIcon class="h-5 w-5 text-primary" />
-                </div>
-                <div class="ml-3">
-                  <p class="font-semibold">Carlos Oliveira</p>
-                  <p class="text-sm text-muted-foreground">Comerciante</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </section>
-  
-      <!-- Footer -->
-      <footer class="border-t bg-background">
-        <div class="container py-8">
-          <div class="grid gap-8 md:grid-cols-3">
-            <div>
-              <div class="flex items-center">
-                <KeyIcon class="w-6 h-6 mr-2 text-primary" />
-                <span class="font-bold text-xl">EncontraMunicipal</span>
-              </div>
-              <p class="mt-2 text-muted-foreground">
-                Conectando pessoas e objetos perdidos em nosso município.
-              </p>
             </div>
-            <div class="space-y-2">
-              <h3 class="font-semibold">Links Rápidos</h3>
-              <div class="grid grid-cols-2 gap-2">
-                <RouterLink to="/" class="text-sm text-muted-foreground hover:text-primary">Início</RouterLink>
-                <RouterLink to="/perdidos" class="text-sm text-muted-foreground hover:text-primary">Perdidos</RouterLink>
-                <RouterLink to="/achados" class="text-sm text-muted-foreground hover:text-primary">Achados</RouterLink>
-                <RouterLink to="/cadastrar" class="text-sm text-muted-foreground hover:text-primary">Cadastrar Item</RouterLink>
-                <RouterLink to="/sobre" class="text-sm text-muted-foreground hover:text-primary">Sobre Nós</RouterLink>
-                <RouterLink to="/contato" class="text-sm text-muted-foreground hover:text-primary">Contato</RouterLink>
-              </div>
-            </div>
-            <div class="space-y-2">
-              <h3 class="font-semibold">Contato</h3>
-              <p class="text-sm text-muted-foreground">contato@encontramunicipal.gov.br</p>
-              <p class="text-sm text-muted-foreground">(00) 1234-5678</p>
-              <div class="flex items-center gap-4 mt-4">
-                <Button variant="outline" size="icon" class="rounded-full">
-                  <FacebookIcon class="h-4 w-4" />
-                </Button>
-                <Button variant="outline" size="icon" class="rounded-full">
-                  <InstagramIcon class="h-4 w-4" />
-                </Button>
-                <Button variant="outline" size="icon" class="rounded-full">
-                  <TwitterIcon class="h-4 w-4" />
-                </Button>
-              </div>
-            </div>
-          </div>
-          <div class="border-t mt-8 pt-4 text-center text-sm text-muted-foreground">
-            © 2025 EncontraMunicipal. Todos os direitos reservados.
-          </div>
-        </div>
-      </footer>
-    </div>
-  </template>
-  
-  <script setup lang="ts">
-  import { RouterLink } from 'vue-router'
-  import { Button } from '@/ui/components/button'
-  import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from '@/ui/components/card'
-  import { Badge } from '@/ui/components/badge'
-  import { 
-    KeyIcon, 
-    UserIcon, 
-    SearchIcon, 
-    PlusIcon, 
-    ClipboardListIcon, 
-    HeartIcon,
-    CalendarIcon,
-    MapPinIcon,
-    FacebookIcon,
-    InstagramIcon,
-    TwitterIcon
-  } from 'lucide-vue-next'
-  </script>
+        </section>
+    </WebsiteLayout>
+</template>
+
+<script setup lang="ts">
+import { ref, computed, onMounted } from "vue";
+import { RouterLink } from "vue-router";
+import WebsiteLayout from "@/website/layouts/WebsiteLayout.vue";
+import ItemCard from "@/website/components/ItemCard.vue";
+import { Button } from "@/ui/components/button";
+import { Card, CardContent } from "@/ui/components/card";
+import { Avatar, AvatarImage, AvatarFallback } from "@/ui/components/avatar";
+import {
+    ClipboardList as ClipboardListIcon,
+    Search as SearchIcon,
+    MessageSquare as MessageSquareIcon,
+    FileSearch as FileSearchIcon,
+} from "lucide-vue-next";
+
+// Estado
+const isLoading = ref(true);
+const activeTab = ref("todos");
+const recentItems = ref<any[]>([]);
+
+// Estatísticas
+const stats = ref({
+    totalItems: 124,
+    lostItems: 58,
+    foundItems: 42,
+    recoveredItems: 24,
+});
+
+// Depoimentos
+const testimonials = ref([
+    {
+        name: "Ana Paula",
+        role: "Moradora",
+        content:
+            "Perdi minha carteira com todos os documentos no parque. Em menos de 24 horas, recebi uma mensagem de alguém que a encontrou. O sistema foi fundamental para recuperar meus pertences!",
+    },
+    {
+        name: "Carlos Mendes",
+        role: "Comerciante",
+        content:
+            "Encontrei um celular na calçada da minha loja e não sabia como achar o dono. Cadastrei no sistema e em poucos dias a proprietária entrou em contato. Fiquei muito feliz em poder ajudar.",
+    },
+    {
+        name: "Mariana Costa",
+        role: "Estudante",
+        content:
+            "Esqueci meu notebook na biblioteca municipal e fiquei desesperada. Graças à plataforma, o funcionário que o encontrou conseguiu me localizar rapidamente. Serviço essencial para a comunidade!",
+    },
+]);
+
+// Métodos
+const setActiveTab = (tab: string) => {
+    activeTab.value = tab;
+};
+
+const getInitials = (name: string) => {
+    return name
+        .split(" ")
+        .map((part) => part.charAt(0))
+        .join("")
+        .toUpperCase()
+        .substring(0, 2);
+};
+
+// Computed
+const filteredItems = computed(() => {
+    if (activeTab.value === "todos") {
+        return recentItems.value;
+    }
+    return recentItems.value.filter((item) => item.status === activeTab.value);
+});
+
+// Buscar itens recentes
+const fetchRecentItems = async () => {
+    isLoading.value = true;
+
+    try {
+        // Em um ambiente real, faríamos uma requisição à API
+        // const response = await fetch('/api/items/recent');
+        // recentItems.value = await response.json();
+
+        // Simulando dados para demonstração
+        await new Promise((resolve) => setTimeout(resolve, 800));
+
+        // Dados fictícios para demonstração
+        recentItems.value = [
+            {
+                id: 1,
+                title: "Carteira de Couro Marrom",
+                description:
+                    "Carteira de couro marrom perdida no Parque Central, contém documentos pessoais.",
+                status: "perdido",
+                location: "Parque Central",
+                created_at: "2025-03-10T15:30:00",
+                category_id: 1,
+            },
+            {
+                id: 2,
+                title: "Relógio de Pulso Prateado",
+                description:
+                    "Relógio de pulso prateado encontrado na Praça Central, marca Casio.",
+                status: "achado",
+                location: "Praça Central",
+                created_at: "2025-03-10T15:30:00",
+                found_date: "2025-03-09T18:30:00",
+                category_id: 3,
+            },
+            {
+                id: 3,
+                title: "Óculos de Grau Preto",
+                description:
+                    "Óculos de grau com armação preta, perdido na Biblioteca Municipal.",
+                status: "perdido",
+                location: "Biblioteca Municipal",
+                created_at: "2025-03-09T18:45:00",
+                category_id: 3,
+            },
+            {
+                id: 4,
+                title: "Documento de Identidade",
+                description:
+                    "RG encontrado próximo à Escola Municipal, nome: Maria Silva.",
+                status: "achado",
+                location: "Escola Municipal",
+                created_at: "2025-03-12T09:15:00",
+                found_date: "2025-03-11T17:00:00",
+                category_id: 1,
+            },
+            {
+                id: 5,
+                title: "Celular Samsung Galaxy",
+                description:
+                    "Celular Samsung Galaxy preto com capinha azul, perdido na praça principal.",
+                status: "perdido",
+                location: "Praça Principal",
+                created_at: "2025-03-13T14:20:00",
+                category_id: 2,
+            },
+            {
+                id: 6,
+                title: "Chaveiro com Várias Chaves",
+                description:
+                    "Molho com 5 chaves e um chaveiro de boneco, encontrado no Supermercado Central.",
+                status: "achado",
+                location: "Supermercado Central",
+                created_at: "2025-03-08T17:30:00",
+                found_date: "2025-03-08T14:20:00",
+                category_id: 5,
+            },
+            {
+                id: 7,
+                title: "Caderno de Anotações",
+                description:
+                    "Caderno espiral capa dura com anotações importantes de trabalho.",
+                status: "perdido",
+                location: "Centro Comercial",
+                created_at: "2025-03-11T11:05:00",
+                category_id: 5,
+            },
+            {
+                id: 8,
+                title: "Fone de Ouvido Bluetooth",
+                description:
+                    "Fone de ouvido sem fio branco encontrado no Centro Esportivo.",
+                status: "achado",
+                location: "Centro Esportivo",
+                created_at: "2025-03-11T11:05:00",
+                found_date: "2025-03-10T16:45:00",
+                category_id: 2,
+            },
+        ];
+    } catch (error) {
+        console.error("Erro ao buscar itens recentes:", error);
+    } finally {
+        isLoading.value = false;
+    }
+};
+
+// Inicializar
+onMounted(() => {
+    fetchRecentItems();
+});
+</script>
