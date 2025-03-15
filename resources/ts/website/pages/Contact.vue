@@ -40,13 +40,7 @@
                                 <div>
                                     <h3 class="font-medium mb-1">Endereço</h3>
                                     <p class="text-muted-foreground">
-                                        Prefeitura Municipal
-                                    </p>
-                                    <p class="text-muted-foreground">
-                                        Av. Principal, 1000 - Centro
-                                    </p>
-                                    <p class="text-muted-foreground">
-                                        CEP: 00000-000
+                                        Luanda, Talatona
                                     </p>
                                 </div>
                             </div>
@@ -408,10 +402,10 @@
                                     custo?</AccordionTrigger
                                 >
                                 <AccordionContent class="px-4 pb-4">
-                                    Não, o EncontraJá é um serviço
-                                    público gratuito oferecido pela prefeitura
-                                    municipal como parte das iniciativas de
-                                    cidadania e apoio à comunidade.
+                                    Não, o EncontraJá é um serviço público
+                                    gratuito oferecido pela prefeitura municipal
+                                    como parte das iniciativas de cidadania e
+                                    apoio à comunidade.
                                 </AccordionContent>
                             </AccordionItem>
 
