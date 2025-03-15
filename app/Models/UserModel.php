@@ -23,6 +23,7 @@ class UserModel extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'phone',
         'gender',
         'role',
         'slug',
