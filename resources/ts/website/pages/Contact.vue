@@ -58,7 +58,7 @@
                                 <div>
                                     <h3 class="font-medium mb-1">Telefone</h3>
                                     <p class="text-muted-foreground">
-                                        (00) 1234-5678
+                                        +244 939 722 301
                                     </p>
                                     <p class="text-muted-foreground">
                                         Segunda a Sexta: 08h às 18h
@@ -73,7 +73,7 @@
                                 <div>
                                     <h3 class="font-medium mb-1">E-mail</h3>
                                     <p class="text-muted-foreground">
-                                        contato@encontramunicipal.gov.br
+                                        contato@encontraja.co.ao
                                     </p>
                                 </div>
                             </div>
@@ -408,7 +408,7 @@
                                     custo?</AccordionTrigger
                                 >
                                 <AccordionContent class="px-4 pb-4">
-                                    Não, o EncontraMunicipal é um serviço
+                                    Não, o EncontraJá é um serviço
                                     público gratuito oferecido pela prefeitura
                                     municipal como parte das iniciativas de
                                     cidadania e apoio à comunidade.

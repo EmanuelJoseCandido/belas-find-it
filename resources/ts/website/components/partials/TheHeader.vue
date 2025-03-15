@@ -3,9 +3,9 @@
         class="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-20"
     >
         <div class="container flex h-16 items-center">
-            <RouterLink to="/" class="flex items-center">
+            <RouterLink :to="{ name: 'home' }" class="flex items-center">
                 <KeyIcon class="w-6 h-6 mr-2 text-primary" />
-                <span class="font-bold text-xl">EncontraMunicipal</span>
+                <span class="font-bold text-xl">EncontraJá</span>
             </RouterLink>
 
             <!-- Desktop Navigation -->

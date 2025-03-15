@@ -5,7 +5,7 @@
                 <div>
                     <div class="flex items-center">
                         <KeyIcon class="w-6 h-6 mr-2 text-primary" />
-                        <span class="font-bold text-xl">EncontraMunicipal</span>
+                        <span class="font-bold text-xl">EncontraJá</span>
                     </div>
                     <p class="mt-2 text-muted-foreground">
                         Conectando pessoas e objetos perdidos em nosso
@@ -52,9 +52,9 @@
                 <div class="space-y-2">
                     <h3 class="font-semibold">Contato</h3>
                     <p class="text-sm text-muted-foreground">
-                        contato@encontramunicipal.gov.br
+                        contato@encontraja.co.ao
                     </p>
-                    <p class="text-sm text-muted-foreground">(00) 1234-5678</p>
+                    <p class="text-sm text-muted-foreground">+244 939 722 301</p>
                     <div class="flex items-center gap-4 mt-4">
                         <Button
                             variant="outline"
@@ -84,7 +84,7 @@
             <div
                 class="border-t mt-8 pt-4 text-center text-sm text-muted-foreground"
             >
-                © {{ currentYear }} EncontraMunicipal. Todos os direitos
+                © {{ currentYear }} EncontraJá. Todos os direitos
                 reservados.
             </div>
         </div>

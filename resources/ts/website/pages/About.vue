@@ -5,7 +5,7 @@
             <div class="container">
                 <div class="max-w-3xl mx-auto text-center">
                     <h1 class="text-3xl md:text-5xl font-bold mb-4">
-                        Sobre o EncontraMunicipal
+                        Sobre o EncontraJá
                     </h1>
                     <p class="text-xl text-white/90">
                         Uma iniciativa para conectar pessoas a seus pertences
@@ -24,7 +24,7 @@
                     <div>
                         <h2 class="text-3xl font-bold mb-6">Nossa Missão</h2>
                         <p class="text-muted-foreground mb-4">
-                            O EncontraMunicipal nasceu da necessidade de criar
+                            O EncontraJá nasceu da necessidade de criar
                             um sistema eficiente e centralizado para ajudar
                             cidadãos a recuperarem seus pertences perdidos e
                             facilitar a devolução de itens encontrados.
@@ -253,7 +253,7 @@
                 <div class="text-center mb-12">
                     <h2 class="text-3xl font-bold mb-4">Nosso Impacto</h2>
                     <p class="text-muted-foreground max-w-2xl mx-auto">
-                        O EncontraMunicipal tem demonstrado resultados
+                        O EncontraJá tem demonstrado resultados
                         significativos desde sua implementação. Confira alguns
                         números que refletem o impacto positivo em nossa
                         comunidade.
