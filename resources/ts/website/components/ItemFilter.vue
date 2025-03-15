@@ -1,84 +1,91 @@
 <template>
-    <div class="bg-white p-4 rounded-lg shadow-sm border">
-        <h3 class="font-medium text-lg mb-4">Filtros</h3>
+    <div class="bg-card rounded-lg border p-4">
+        <h3 class="font-medium mb-4">Filtros</h3>
 
-        <!-- Busca por palavra-chave -->
-        <div class="mb-4">
-            <Label for="search" class="mb-1 block">Buscar</Label>
-            <div class="relative">
-                <Search
-                    class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"
-                />
-                <Input
-                    id="search"
-                    v-model="filters.keyword"
-                    placeholder="Buscar item..."
-                    class="pl-9"
-                    @input="handleInputDebounce"
+        <div class="space-y-4">
+            <!-- Busca por palavra-chave -->
+            <div>
+                <label for="keyword" class="text-sm font-medium block mb-1"
+                    >Buscar</label
+                >
+                <input
+                    id="keyword"
+                    type="text"
+                    placeholder="Digite sua busca"
+                    class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                    v-model="filterData.keyword"
+                    @input="updateFilters"
                 />
             </div>
-        </div>
 
-        <!-- Filtro por categoria -->
-        <div class="mb-4">
-            <Label for="category" class="mb-1 block">Categoria</Label>
-            <Select
-                v-model="filters.category"
-                @update:model-value="emitFilters"
-            >
-                <SelectTrigger id="category">
-                    <SelectValue placeholder="Todas as categorias" />
-                </SelectTrigger>
-                <SelectContent>
-                    <SelectItem value="">Todas as categorias</SelectItem>
-                    <SelectItem
-                        v-for="category in categories"
-                        :key="category.id"
-                        :value="category.id.toString()"
-                    >
-                        {{ category.name }}
-                    </SelectItem>
-                </SelectContent>
-            </Select>
-        </div>
+            <!-- Categoria -->
+            <div>
+                <label for="category" class="text-sm font-medium block mb-1"
+                    >Categoria</label
+                >
+                <Select
+                    v-model="filterData.category"
+                    @update:model-value="updateFilters"
+                >
+                    <SelectTrigger>
+                        <SelectValue placeholder="Todas as categorias" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <!-- Corrigido: Adicionamos uma opção para "Todas as categorias" com valor específico -->
+                        <SelectItem value="all">Todas as categorias</SelectItem>
+                        <SelectItem value="1">Documentos</SelectItem>
+                        <SelectItem value="2">Eletrônicos</SelectItem>
+                        <SelectItem value="3">Acessórios</SelectItem>
+                        <SelectItem value="4">Joias</SelectItem>
+                        <SelectItem value="5">Outros</SelectItem>
+                    </SelectContent>
+                </Select>
+            </div>
 
-        <!-- Filtro por localização -->
-        <div class="mb-4">
-            <Label for="location" class="mb-1 block">Localização</Label>
-            <Input
-                id="location"
-                v-model="filters.location"
-                placeholder="Qualquer local"
-                @input="handleInputDebounce"
-            />
-        </div>
+            <!-- Local -->
+            <div>
+                <label for="location" class="text-sm font-medium block mb-1"
+                    >Local</label
+                >
+                <input
+                    id="location"
+                    type="text"
+                    placeholder="Onde foi perdido"
+                    class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                    v-model="filterData.location"
+                    @input="updateFilters"
+                />
+            </div>
 
-        <!-- Filtro por data -->
-        <div class="mb-4">
-            <Label for="date" class="mb-1 block">Data</Label>
-            <Input
-                id="date"
-                v-model="filters.date"
-                type="date"
-                @change="emitFilters"
-            />
-        </div>
+            <!-- Data -->
+            <div>
+                <label for="date" class="text-sm font-medium block mb-1"
+                    >Data</label
+                >
+                <input
+                    id="date"
+                    type="date"
+                    class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                    v-model="filterData.date"
+                    @change="updateFilters"
+                />
+            </div>
 
-        <!-- Botões -->
-        <div class="flex flex-col gap-2 mt-6">
-            <Button @click="emitFilters">Aplicar Filtros</Button>
-            <Button variant="outline" @click="resetFilters"
-                >Limpar Filtros</Button
-            >
+            <!-- Botões -->
+            <div class="pt-2 flex gap-2">
+                <Button variant="outline" class="flex-1" @click="resetFilters">
+                    Limpar
+                </Button>
+                <Button class="flex-1" @click="applyFilters"> Aplicar </Button>
+            </div>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted } from "vue";
+import { ref, watch, onMounted } from "vue";
+import { useRoute } from "vue-router";
 import { Button } from "@/ui/components/button";
-import { Input } from "@/ui/components/input";
-import { Label } from "@/ui/components/label";
 import {
     Select,
     SelectContent,
@@ -86,95 +93,62 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/ui/components/select";
-import { Search } from "lucide-vue-next";
 
-// Interface para categorias
-interface Category {
-    id: number;
-    name: string;
-}
+const route = useRoute();
 
-// Props e Emits
-const props = defineProps<{
-    initialFilters?: {
-        keyword?: string;
-        category?: string;
-        location?: string;
-        date?: string;
-    };
-}>();
-
-const emit = defineEmits<{
-    (
-        e: "filter",
-        filters: {
-            keyword: string;
-            category: string;
-            location: string;
-            date: string;
-        }
-    ): void;
-}>();
-
-// Estado
-const categories = ref<Category[]>([]);
-const debounceTimeout = ref<number | null>(null);
-
-// Filtros
-const filters = reactive({
-    keyword: props.initialFilters?.keyword || "",
-    category: props.initialFilters?.category || "",
-    location: props.initialFilters?.location || "",
-    date: props.initialFilters?.date || "",
+// Definir modelo de dados para filtros
+const filterData = ref({
+    keyword: "",
+    // Corrigido: Inicializar com "all" em vez de string vazia
+    category: "all",
+    location: "",
+    date: "",
 });
 
-// Buscar categorias
-const fetchCategories = async () => {
-    try {
-        // Em um ambiente real, buscaríamos da API
-        // const response = await fetch('/api/categories');
-        // categories.value = await response.json();
+// Emitir evento quando os filtros são atualizados
+const emit = defineEmits(["filter"]);
 
-        // Dados de exemplo por enquanto
-        categories.value = [
-            { id: 1, name: "Documentos" },
-            { id: 2, name: "Eletrônicos" },
-            { id: 3, name: "Acessórios" },
-            { id: 4, name: "Vestuário" },
-            { id: 5, name: "Outros" },
-        ];
-    } catch (error) {
-        console.error("Erro ao buscar categorias:", error);
-    }
+// Atualizar filtros em tempo real (debounce poderia ser adicionado em produção)
+const updateFilters = () => {
+    emit("filter", {
+        ...filterData.value,
+        // Corrigido: Não enviar "all" como categoria, enviar string vazia para o componente pai
+        // para manter a compatibilidade com a lógica existente
+        category:
+            filterData.value.category === "all"
+                ? ""
+                : filterData.value.category,
+    });
 };
 
-// Função para emitir filtros
-const emitFilters = () => {
-    emit("filter", { ...filters });
+// Aplicar filtros (para o botão Aplicar)
+const applyFilters = () => {
+    updateFilters();
 };
 
-// Função para resetar filtros
 const resetFilters = () => {
-    filters.keyword = "";
-    filters.category = "";
-    filters.location = "";
-    filters.date = "";
-    emitFilters();
+    filterData.value = {
+        keyword: "",
+        category: "all",
+        location: "",
+        date: "",
+    };
+    updateFilters();
 };
 
-// Controle de debounce para inputs de texto
-const handleInputDebounce = () => {
-    if (debounceTimeout.value) {
-        clearTimeout(debounceTimeout.value);
-    }
-
-    debounceTimeout.value = setTimeout(() => {
-        emitFilters();
-    }, 500);
-};
-
-// Hooks
 onMounted(() => {
-    fetchCategories();
+    const queryKeyword = route.query.keyword as string;
+    const queryCategory = route.query.category as string;
+    const queryLocation = route.query.location as string;
+    const queryDate = route.query.date as string;
+
+    if (queryKeyword || queryCategory || queryLocation || queryDate) {
+        filterData.value = {
+            keyword: queryKeyword || "",
+            category: queryCategory || "all",
+            location: queryLocation || "",
+            date: queryDate || "",
+        };
+    }
 });
 </script>
