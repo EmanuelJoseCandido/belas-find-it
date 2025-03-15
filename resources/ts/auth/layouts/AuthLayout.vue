@@ -20,7 +20,16 @@
                         />
                     </svg>
                 </div>
-                <h1 class="mt-2 text-2xl font-bold text-gray-900">AppName</h1>
+
+                <RouterLink
+                    :to="{ name: 'home' }"
+                    class="flex items-center justify-center"
+                >
+                    <KeyIcon class="w-6 h-6 mr-2 text-primary" />
+                    <h1 class="mt-2 text-2xl font-bold text-gray-900">
+                        EncontraJá
+                    </h1>
+                </RouterLink>
             </div>
 
             <Card
@@ -34,4 +43,5 @@
 
 <script setup lang="ts">
 import { Card } from "@/ui/components/card";
+import { KeyIcon } from "lucide-vue-next";
 </script>
