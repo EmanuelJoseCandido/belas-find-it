@@ -11,46 +11,50 @@
             <!-- Desktop Navigation -->
             <nav class="hidden md:flex ml-auto gap-6">
                 <RouterLink
-                    to="/"
+                    :to="{ name: 'home' }"
                     class="text-sm font-medium transition-colors hover:text-primary"
-                    >Início</RouterLink
-                >
+                    >Início
+                </RouterLink>
                 <RouterLink
-                    to="/perdidos"
+                    :to="{ name: 'lost' }"
                     class="text-sm font-medium transition-colors hover:text-primary"
                     >Perdidos</RouterLink
                 >
                 <RouterLink
-                    to="/achados"
+                    :to="{ name: 'findings' }"
                     class="text-sm font-medium transition-colors hover:text-primary"
-                    >Achados</RouterLink
                 >
+                    Achados
+                </RouterLink>
                 <RouterLink
-                    to="/cadastrar-item"
+                    :to="{ name: 'register-item' }"
                     class="text-sm font-medium transition-colors hover:text-primary"
-                    >Cadastrar Item</RouterLink
                 >
+                    Cadastrar Item
+                </RouterLink>
                 <RouterLink
-                    to="/sobre"
+                    :to="{ name: 'about' }"
                     class="text-sm font-medium transition-colors hover:text-primary"
-                    >Sobre</RouterLink
                 >
+                    Sobre
+                </RouterLink>
                 <RouterLink
-                    to="/contacto"
+                    :to="{ name: 'contact' }"
                     class="text-sm font-medium transition-colors hover:text-primary"
-                    >Contacto</RouterLink
                 >
+                    Contacto
+                </RouterLink>
             </nav>
 
             <!-- Authentication Buttons -->
             <div class="ml-4 hidden md:flex items-center gap-4">
-                <RouterLink to="/auth/login">
+                <RouterLink :to="{ name: 'auth-login' }">
                     <Button variant="outline" size="sm" class="flex">
                         <UserIcon class="mr-2 h-4 w-4" />
                         Entrar
                     </Button>
                 </RouterLink>
-                <RouterLink to="/auth/register">
+                <RouterLink :to="{ name: 'auth-register' }">
                     <Button size="sm" class="flex">Cadastrar-se</Button>
                 </RouterLink>
             </div>
@@ -85,14 +89,14 @@
 
                 <div class="pt-2 mt-2 border-t border-muted">
                     <RouterLink
-                        to="/auth/login"
+                        :to="{ name: 'auth-login' }"
                         class="block py-2 px-3 rounded-md hover:bg-accent"
                         @click="isOpen = false"
                     >
                         Entrar
                     </RouterLink>
                     <RouterLink
-                        to="/auth/register"
+                        :to="{ name: 'auth-register' }"
                         class="block py-2 px-3 rounded-md hover:bg-accent"
                         @click="isOpen = false"
                     >
