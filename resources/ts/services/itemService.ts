@@ -11,7 +11,7 @@ export const itemService = {
         const formData = new FormData();
         Object.entries(itemData).forEach(([key, value]) => {
             if (value !== null && value !== undefined) {
-                formData.append(key, value);
+                formData.append(key, value as string | Blob);
             }
         });
         return api.post("/items", formData, {
