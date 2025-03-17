@@ -3,6 +3,7 @@ import { ref, computed } from "vue";
 import { authService } from "@/services/authService";
 import type {
     IUser,
+    IRegisterUser,
     ILoginCredentials,
     IAuthResponse,
 } from "@/auth/types/UserInterface";
@@ -19,6 +20,25 @@ export const useAuthStore = defineStore("auth", () => {
     const isModerator = computed<boolean>(
         () => user.value?.role === "moderator"
     );
+
+    async function register(user: IRegisterUser): Promise<IUser> {
+        loading.value = true;
+        error.value = null;
+        try {
+            const response = (await authService.register(
+                user
+            )) as IAuthResponse;
+            token.value = response.data.token;
+            isAuthenticated.value = true;
+            localStorage.setItem("token", response.data.token);
+            return response.data;
+        } catch (e: any) {
+            error.value = e.response?.data?.message || "Erro ao fazer login";
+            throw e;
+        } finally {
+            loading.value = false;
+        }
+    }
 
     async function login(credentials: ILoginCredentials): Promise<IUser> {
         loading.value = true;
@@ -83,6 +103,7 @@ export const useAuthStore = defineStore("auth", () => {
 
         login,
         logout,
+        register,
         fetchUser,
     };
 });

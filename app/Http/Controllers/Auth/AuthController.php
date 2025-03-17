@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\ChangePasswordRequest;
 use App\Http\Requests\Auth\ForgotPasswordRequest;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Requests\Auth\ResetPasswordRequest;
 use App\Http\Requests\Auth\VerifyPasswordRequest;
 use App\Http\Resources\UserResource;
@@ -28,6 +29,22 @@ class AuthController extends Controller
     }
 
     /**
+     * Handle a register attempt.
+     *
+     * @param  RegisterRequest $registerRequest
+     * @return UserResource
+     * @throws LoginInvalidException
+     */
+    public function register(RegisterRequest $registerRequest)
+    {
+        $input = $registerRequest->validated();
+        $user = $this->authService->register($input);
+        // $this->reCAPTCHA->verifyReCAPTCHA($input['recaptcha_token'], $loginRequest->ip());
+
+        return new UserResource($user);
+    }
+
+    /**
      * Handle a login attempt.
      *
      * @param  LoginRequest $loginRequest
@@ -37,10 +54,10 @@ class AuthController extends Controller
     public function login(LoginRequest $loginRequest)
     {
         $input = $loginRequest->validated();
-        $employee = $this->authService->login($input);
+        $user = $this->authService->login($input);
         // $this->reCAPTCHA->verifyReCAPTCHA($input['recaptcha_token'], $loginRequest->ip());
 
-        return new UserResource($employee);
+        return new UserResource($user);
     }
 
     /**
@@ -104,8 +121,8 @@ class AuthController extends Controller
      */
     public function me()
     {
-        $employee  = $this->authService->me();
-        return new UserResource($employee);
+        $user = $this->authService->me();
+        return new UserResource($user);
     }
 
     /**

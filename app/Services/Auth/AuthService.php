@@ -16,11 +16,35 @@ use App\Traits\Essentials\VerifyTypeUserTrait;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use illuminate\Support\Str;
-use Throwable;
 
 class AuthService
 {
     use VerifyTypeUserTrait;
+
+    /**
+     * Handle user registration
+     *
+     * @param array $data
+     * @return UserModel
+     * @throws Exception
+     */
+    public function register(array $data): UserModel
+    {
+        $user = UserModel::create([
+            'name' => $data['name'],
+            'slug' => Str::slug($data['name']),
+            'email' => $data['email'],
+            'gender' => $data['gender'],
+            'phone' => $data['phone'],
+            'password' => bcrypt($data['password']),
+        ]);
+
+        if (!$user) {
+            throw new Exception("User registration failed");
+        }
+
+        return $user;
+    }
 
 
     /**
@@ -60,7 +84,7 @@ class AuthService
      */
     public function me(): UserModel
     {
-        $user = auth()->user();
+        $user = Auth::user();
 
         if (!$user instanceof UserModel) {
             throw new Exception("Authenticated user is not an instance of UserModel");
@@ -141,7 +165,7 @@ class AuthService
      */
     public function changePassword(string $oldPassword, string $newPassword)
     {
-        $user = UserModel::where('email', auth()->user()->email)->firstOrFail();
+        $user = UserModel::where('email', Auth::user()->email)->firstOrFail();
 
         if (!password_verify($oldPassword, $user->password)) {
             throw new ChangePasswordInvalidException();
