@@ -16,6 +16,13 @@ class UserModel extends Authenticatable
     use HasFactory, Notifiable;
 
     /**
+     * The attributes that are table name
+     *
+     * @var string
+     */
+    protected $table = 'users';
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var list<string>

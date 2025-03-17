@@ -1,20 +1,12 @@
 <?php
 
 namespace App\Traits\Essentials;
+use Illuminate\Support\Facades\Auth;
 
-use App\Enums\Users\Privileges;
+use App\Enums\Users\RoleEnum;
 
 trait VerifyTypeUserTrait
 {
-
-    /**
-     * Verify Super Admin
-     * @return bool
-     */
-    public function verifySuperAdmin(): bool
-    {
-        return auth()->user()->privilege == Privileges::SUPER_ADMIN->value;
-    }
 
     /**
      * Verify Admin
@@ -23,9 +15,9 @@ trait VerifyTypeUserTrait
      */
     public function verifyAdmin(): bool
     {
-        return true;
-        $privilege = auth()->user()->privilege;
-        return $privilege == Privileges::ADMIN->name || $privilege == Privileges::SUPER_ADMIN->name;
+        // return true;
+        $privilege = Auth::user()->role;
+        return $privilege == RoleEnum::ADMIN->name;
     }
 
 
@@ -37,7 +29,7 @@ trait VerifyTypeUserTrait
      */
     public function verifyBlockedStatus(): bool
     {
-        return auth()->user()->is_blocked;
+        return Auth::user()->is_blocked;
     }
 
     /**
@@ -48,7 +40,7 @@ trait VerifyTypeUserTrait
      */
     public function verifyActiveStatus(): bool
     {
-        return auth()->user()->is_active;
+        return Auth::user()->is_active;
     }
 
 
@@ -60,6 +52,6 @@ trait VerifyTypeUserTrait
      */
     public function verifyLoginStatus(): bool
     {
-        return auth()->user()->is_login;
+        return Auth::user()->is_login;
     }
 }
