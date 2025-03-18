@@ -159,9 +159,7 @@ const validateForm = (): boolean => {
     return isValid;
 };
 
-// Função para fazer login
 const login = async () => {
-    // Validar formulário
     if (!validateForm()) {
         return;
     }
@@ -170,23 +168,14 @@ const login = async () => {
         isLoading.value = true;
         const credentials = formatCredentials();
 
-        // Log para debug
-        console.log("Credenciais formatadas:", credentials);
-
         // Chamar a função de login do store
         await authStore.login(credentials);
 
-        // Notificação de sucesso
         toast({
             title: "Login realizado com sucesso!",
-            description: h(
-                "p",
-                { class: "text-sm" },
-                "Você será redirecionado para o painel."
-            ),
+            description: "Você será redirecionado para o painel.",
         });
 
-        // Redirecionar após login bem-sucedido
         router.push({ name: "admin-dashboard" });
     } catch (error) {
         console.error("Erro ao fazer login", error);
@@ -194,11 +183,8 @@ const login = async () => {
         // Notificação de erro
         toast({
             title: "Falha no login",
-            description: h(
-                "p",
-                { class: "text-sm" },
-                "Credenciais inválidas. Verifique seu email/telefone e senha."
-            ),
+            description:
+                "Credenciais inválidas. Verifique seu email/telefone e senha.",
             variant: "destructive",
         });
     } finally {
