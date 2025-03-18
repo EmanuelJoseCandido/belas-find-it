@@ -15,6 +15,9 @@ const router = createRouter({
 router.beforeEach(async (to, from, next) => {
     const authStore = useAuthStore();
 
+    console.log("authStore", authStore);
+
+    console.log("to", to);
     // Try to fetch user data if we don't have it but have a token
     if (!authStore.user && authStore.token) {
         await authStore.fetchUser();

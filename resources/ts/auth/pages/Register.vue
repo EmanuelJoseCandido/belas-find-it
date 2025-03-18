@@ -138,11 +138,16 @@ const onSubmit = async () => {
             description: h(
                 "p",
                 { class: "text-sm" },
-                "Você será redirecionado para o login."
+                "Você será redirecionado para seu perfil."
             ),
         });
 
-        router.push({ name: "admin-dashboard" });
+        // Redirecionamento baseado no tipo de usuário
+        if (authStore.isAdmin || authStore.isModerator) {
+            router.push({ name: "admin-dashboard" });
+        } else {
+            router.push({ name: "user-profile" });
+        }
     } catch (error) {
         console.error("Erro ao registrar", error);
         toast({

@@ -27,5 +27,11 @@ export const websiteRoutes: Array<RouteRecordRaw> = [
         name: "register-item",
         component: () => import("../pages/RegisterItem.vue"),
     },
+    {
+        path: "/perfil",
+        name: "user-profile",
+        component: () => import("../pages/UserProfile.vue"),
+        meta: { requiresAuth: true },
+    },
     { path: "/:pathMatch(.*)*", redirect: "/" },
 ];

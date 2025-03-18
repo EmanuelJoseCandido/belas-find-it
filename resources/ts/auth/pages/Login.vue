@@ -176,7 +176,12 @@ const login = async () => {
             description: "Você será redirecionado para o painel.",
         });
 
-        router.push({ name: "admin-dashboard" });
+        // Redirecionamento baseado no tipo de usuário
+        if (authStore.isAdmin || authStore.isModerator) {
+            router.push({ name: "admin-dashboard" });
+        } else {
+            router.push({ name: "user-profile" });
+        }
     } catch (error) {
         console.error("Erro ao fazer login", error);
 
