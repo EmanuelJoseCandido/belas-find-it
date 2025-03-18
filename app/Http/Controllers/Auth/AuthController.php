@@ -49,7 +49,7 @@ class AuthController extends Controller
      *
      * @param  LoginRequest $loginRequest
      * @return UserResource
-     * @throws LoginInvalidException|LoginBlockedException
+     * @throws LoginInvalidException
      */
     public function login(LoginRequest $loginRequest)
     {

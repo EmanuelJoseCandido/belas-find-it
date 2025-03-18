@@ -43,6 +43,8 @@ export const useAuthStore = defineStore("auth", () => {
     async function login(credentials: ILoginCredentials): Promise<IUser> {
         loading.value = true;
         error.value = null;
+
+        console.log("credentials", credentials);
         try {
             const response = (await authService.login(
                 credentials

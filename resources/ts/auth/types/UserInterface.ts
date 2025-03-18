@@ -7,6 +7,7 @@ export interface IUser {
 }
 
 export type TGenders = "masculino" | "feminino" | "outro";
+export type TTypeLogin = "email" | "phone";
 
 export interface IRegisterUser extends Omit<IUser, "id" | "role"> {
     phone: string;
@@ -17,7 +18,9 @@ export interface IRegisterUser extends Omit<IUser, "id" | "role"> {
 }
 
 export interface ILoginCredentials {
-    email: string;
+    email?: string;
+    phone?: number;
+    type: TTypeLogin;
     password: string;
 }
 

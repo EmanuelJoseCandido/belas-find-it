@@ -16,6 +16,8 @@ use App\Traits\Essentials\VerifyTypeUserTrait;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use illuminate\Support\Str;
+use Laravel\Sanctum\PersonalAccessToken;
+use Laravel\Sanctum\TransientToken;
 
 class AuthService
 {
@@ -101,6 +103,20 @@ class AuthService
      */
     public function logout()
     {
+
+      /*   $accessToken = request()->bearerToken();
+
+        dd(auth()->user());
+
+        TransientToken::
+
+        // Get access token from database
+        $token = PersonalAccessToken::findToken($accessToken);
+
+        // Revoke token
+        $token->delete(); */
+
+
         request()->user()->currentAccessToken()->delete();
     }
 

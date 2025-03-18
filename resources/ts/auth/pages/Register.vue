@@ -95,6 +95,7 @@
 
 <script setup lang="ts">
 import { reactive, ref } from "vue";
+import { useRouter } from "vue-router";
 import type { IRegisterUser, TGenders } from "@/auth/types/UserInterface";
 import AuthLayout from "@/auth/layouts/AuthLayout.vue";
 import { useAuthStore } from "@/auth/stores/authStore";
@@ -105,6 +106,7 @@ import CheckboxField from "@/auth/components/CheckboxField.vue";
 import { toast } from "@/ui/components/toast";
 import { h } from "vue";
 
+const router = useRouter();
 const authStore = useAuthStore();
 
 const genderOptions = [
@@ -129,8 +131,6 @@ const onSubmit = async () => {
     try {
         isLoading.value = true;
 
-        console.log("Registrando...", form);
-
         await authStore.register(form);
 
         toast({
@@ -142,8 +142,7 @@ const onSubmit = async () => {
             ),
         });
 
-        // Redirecionar após registro bem-sucedido
-        // router.push({ name: 'auth-login' });
+        router.push({ name: "admin-dashboard" });
     } catch (error) {
         console.error("Erro ao registrar", error);
         toast({

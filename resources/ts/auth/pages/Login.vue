@@ -6,7 +6,6 @@
                 Entre com suas credenciais
             </p>
         </div>
-
         <form @submit.prevent="login">
             <div class="space-y-3">
                 <InputField
@@ -25,19 +24,15 @@
                     :error="errors.password"
                 />
             </div>
-
             <div class="flex items-center justify-between mt-6 mb-4">
                 <div class="flex items-center">
-                    <input
+                    <CheckboxField
                         id="remember"
-                        type="checkbox"
-                        class="h-4 w-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500"
-                    />
-                    <label
-                        for="remember"
-                        class="ml-2 block text-xs text-gray-700"
-                        >Lembrar</label
+                        name="remember"
+                        v-model="form.remember"
                     >
+                        <span class="text-xs text-gray-700">Lembrar</span>
+                    </CheckboxField>
                 </div>
                 <a
                     href="#"
@@ -46,13 +41,11 @@
                     Esqueceu a senha?
                 </a>
             </div>
-
             <Button type="submit" class="w-full" :disabled="isLoading">
                 <span v-if="isLoading">Carregando...</span>
                 <span v-else>Entrar</span>
             </Button>
         </form>
-
         <div class="text-center mt-4">
             <p class="text-xs text-gray-600">
                 Não tem conta?
@@ -68,52 +61,148 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import AuthLayout from "@/auth/layouts/AuthLayout.vue";
 import InputField from "@/auth/components/InputField.vue";
+import CheckboxField from "@/auth/components/CheckboxField.vue";
 import { Button } from "@/ui/components/button";
+import { useAuthStore } from "@/auth/stores/authStore";
+import { toast } from "@/ui/components/toast";
+import { useRouter } from "vue-router";
+import { h } from "vue";
+import type { ILoginCredentials, TTypeLogin } from "@/auth/types/UserInterface";
 
+const authStore = useAuthStore();
+const router = useRouter();
+
+// Estado do formulário
 const form = ref({
     identifier: "",
     password: "",
+    remember: false,
 });
 
+// Estado de erros
 const errors = ref({
     identifier: "",
     password: "",
 });
 
+// Estado de carregamento
 const isLoading = ref(false);
 
-const login = async () => {
-    // Limpar erros anteriores
+// Função para determinar o tipo de identificador (email ou telefone)
+const identifierType = computed((): TTypeLogin => {
+    const value = form.value.identifier.trim();
+    // Verifica se contém apenas números e caracteres permitidos em telefone (+, -, espaços, parênteses)
+    const isPhone = /^[0-9+\-() ]*$/.test(value);
+    return isPhone ? "phone" : "email";
+});
+
+// Função para formatar as credenciais com base no tipo de identificador
+const formatCredentials = (): ILoginCredentials => {
+    const credentials: ILoginCredentials = {
+        type: identifierType.value,
+        password: form.value.password,
+    };
+
+    // Remove caracteres não numéricos se for telefone
+    if (identifierType.value === "phone") {
+        credentials.phone = Number(
+            form.value.identifier.replace(/[^0-9]/g, "")
+        );
+    } else {
+        credentials.email = form.value.identifier.trim();
+    }
+
+    return credentials;
+};
+
+// Função para validar o formulário
+const validateForm = (): boolean => {
+    let isValid = true;
     errors.value = {
         identifier: "",
         password: "",
     };
 
-    // Validação básica
-    if (!form.value.identifier) {
+    // Validar identificador
+    if (!form.value.identifier.trim()) {
         errors.value.identifier = "O email ou telefone é obrigatório";
+        isValid = false;
+    } else if (identifierType.value === "email") {
+        // Validar formato de email
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(form.value.identifier.trim())) {
+            errors.value.identifier = "Digite um email válido";
+            isValid = false;
+        }
+    } else if (identifierType.value === "phone") {
+        // Validar formato de telefone (apenas números após remover caracteres especiais)
+        const phoneDigits = form.value.identifier.replace(/[^0-9]/g, "");
+        if (phoneDigits.length < 10) {
+            // Assumindo telefone brasileiro com DDD
+            errors.value.identifier = "Digite um número de telefone válido";
+            isValid = false;
+        }
     }
 
+    // Validar senha
     if (!form.value.password) {
         errors.value.password = "A senha é obrigatória";
+        isValid = false;
+    } else if (form.value.password.length < 6) {
+        errors.value.password = "A senha deve ter pelo menos 6 caracteres";
+        isValid = false;
     }
 
-    // Se não houver erros, continuar com o login
-    if (!errors.value.identifier && !errors.value.password) {
-        try {
-            isLoading.value = true;
-            // Simulando uma chamada de API
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-            console.log("Fazendo login...", form.value);
-            // Redirecionar após login bem-sucedido
-        } catch (error) {
-            console.error("Erro ao fazer login", error);
-        } finally {
-            isLoading.value = false;
-        }
+    return isValid;
+};
+
+// Função para fazer login
+const login = async () => {
+    // Validar formulário
+    if (!validateForm()) {
+        return;
+    }
+
+    try {
+        isLoading.value = true;
+        const credentials = formatCredentials();
+
+        // Log para debug
+        console.log("Credenciais formatadas:", credentials);
+
+        // Chamar a função de login do store
+        await authStore.login(credentials);
+
+        // Notificação de sucesso
+        toast({
+            title: "Login realizado com sucesso!",
+            description: h(
+                "p",
+                { class: "text-sm" },
+                "Você será redirecionado para o painel."
+            ),
+        });
+
+        // Redirecionar após login bem-sucedido
+        router.push({ name: "admin-dashboard" });
+    } catch (error) {
+        console.error("Erro ao fazer login", error);
+
+        // Notificação de erro
+        toast({
+            title: "Falha no login",
+            description: h(
+                "p",
+                { class: "text-sm" },
+                "Credenciais inválidas. Verifique seu email/telefone e senha."
+            ),
+            variant: "destructive",
+        });
+    } finally {
+        isLoading.value = false;
     }
 };
 </script>

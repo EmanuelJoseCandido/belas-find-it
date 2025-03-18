@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Auth;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class LoginRequest extends FormRequest
 {
@@ -15,6 +16,27 @@ class LoginRequest extends FormRequest
     }
 
     /**
+     * Prepare the data for validation.
+     *
+     * @return void
+     */
+    protected function prepareForValidation()
+    {
+        if ($this->has('type')) {
+            $type = $this->input('type');
+
+            if ($type === 'phone') {
+                $inputPhone = $this->input('phone');
+                $phone = preg_replace('/[^0-9]/', '', $inputPhone);
+                $this->merge(['phone' => $phone]);
+            } else {
+                $email = $this->input('email');
+                $this->merge(['email' => $email]);
+            }
+        }
+    }
+
+    /**
      * Get the validation rules that apply to the request.
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array|string>
@@ -22,8 +44,11 @@ class LoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => ['string', 'required', 'max:255'],
-            'password' => ['min:8', 'max:255','string']
+            'type' => ['required', 'string', Rule::in(['email', 'phone'])],
+            'email' => ['sometimes', 'email', 'max:255'],
+            'phone' => ['sometimes', 'string', 'min:10', 'max:15'],
+            'password' => ['required', 'string', 'min:6', 'max:255'],
+            'remember' => ['sometimes', 'boolean'],
         ];
     }
 }

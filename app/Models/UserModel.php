@@ -1,19 +1,17 @@
 <?php
-
 namespace App\Models;
-
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-
 use App\Enums\Users\GenderEnum;
 use App\Enums\Users\RoleEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 class UserModel extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasApiTokens;
 
     /**
      * The attributes that are table name
@@ -69,7 +67,6 @@ class UserModel extends Authenticatable
             'is_changed_password_once' => 'boolean',
         ];
     }
-
 
     public function items()
     {
