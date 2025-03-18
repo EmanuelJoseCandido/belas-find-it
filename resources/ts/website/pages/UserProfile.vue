@@ -860,28 +860,27 @@
 </template>
 
 <script setup lang="ts">
-
-import { ref, computed, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
-import { useAuthStore } from '@/auth/stores/authStore';
-import { toast } from '@/ui/components/toast';
-import WebsiteLayout from '@/website/layouts/WebsiteLayout.vue';
-import ItemCard from '@/website/components/ItemCard.vue';
-import { Card, CardContent } from '@/ui/components/card';
-import { Avatar, AvatarImage, AvatarFallback } from '@/ui/components/avatar';
-import { Button } from '@/ui/components/button';
-import { Badge } from '@/ui/components/badge';
-import { Input } from '@/ui/components/input';
-import { Label } from '@/ui/components/label';
+import { ref, computed, onMounted } from "vue";
+import { useRouter } from "vue-router";
+import { useAuthStore } from "@/auth/stores/authStore";
+import { toast } from "@/ui/components/toast";
+import WebsiteLayout from "@/website/layouts/WebsiteLayout.vue";
+import ItemCard from "@/website/components/ItemCard.vue";
+import { Card, CardContent } from "@/ui/components/card";
+import { Avatar, AvatarImage, AvatarFallback } from "@/ui/components/avatar";
+import { Button } from "@/ui/components/button";
+import { Badge } from "@/ui/components/badge";
+import { Input } from "@/ui/components/input";
+import { Label } from "@/ui/components/label";
 import {
     Select,
     SelectContent,
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from '@/ui/components/select';
-import { Separator } from '@/ui/components/separator';
-import { Switch } from '@/ui/components/switch';
+} from "@/ui/components/select";
+import { Separator } from "@/ui/components/separator";
+import { Switch } from "@/ui/components/switch";
 import {
     Dialog,
     DialogContent,
@@ -889,7 +888,7 @@ import {
     DialogFooter,
     DialogHeader,
     DialogTitle,
-} from '@/ui/components/dialog';
+} from "@/ui/components/dialog";
 import {
     User as UserIcon,
     Package as PackageIcon,
@@ -906,7 +905,7 @@ import {
     Inbox as InboxIcon,
     Reply as ReplyIcon,
     Loader2,
-} from 'lucide-vue-next';
+} from "lucide-vue-next";
 
 // Router e Auth
 const router = useRouter();
@@ -914,48 +913,51 @@ const authStore = useAuthStore();
 const user = computed(() => authStore.user);
 
 // Estado da página
-const activeTab = ref('dashboard');
+const activeTab = ref("dashboard");
 const isLoading = ref(false);
 const isUpdating = ref(false);
 const isDeleting = ref(false);
 const showDeleteConfirm = ref(false);
-const deleteConfirmText = ref('');
-const itemsFilter = ref('all');
+const deleteConfirmText = ref("");
+const itemsFilter = ref("all");
 
 // Dados do perfil
-const profileImage = ref('/api/placeholder/100/100');
+const profileImage = ref("/api/placeholder/100/100");
 const userInitials = computed(() => {
-    if (!user.value?.name) return 'U';
+    if (!user.value?.name) return "U";
     return user.value.name
-        .split(' ')
-        .map(part => part.charAt(0))
-        .join('')
+        .split(" ")
+        .map((part) => part.charAt(0))
+        .join("")
         .toUpperCase()
         .substring(0, 2);
 });
 
 const userRoleLabel = computed(() => {
-    if (!user.value?.role) return 'Usuário';
+    if (!user.value?.role) return "Usuário";
     switch (user.value.role) {
-        case 'admin': return 'Administrador';
-        case 'moderator': return 'Moderador';
-        default: return 'Usuário';
+        case "admin":
+            return "Administrador";
+        case "moderator":
+            return "Moderador";
+        default:
+            return "Usuário";
     }
 });
 
 // Dados do formulário de perfil
 const profileForm = ref({
-    name: '',
-    email: '',
-    phone: '',
-    gender: ''
+    name: "",
+    email: "",
+    phone: "",
+    gender: "",
 });
 
 // Dados do formulário de senha
 const passwordForm = ref({
-    currentPassword: '',
-    newPassword: '',
-    confirmPassword: ''
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
 });
 
 // Configurações do usuário
@@ -964,132 +966,140 @@ const settings = ref({
     smsNotifications: false,
     newsletter: true,
     publicProfile: true,
-    showPhone: false
+    showPhone: false,
 });
 
 // Estatísticas do usuário
 const stats = ref({
     lostItems: 2,
     foundItems: 3,
-    recoveredItems: 1
+    recoveredItems: 1,
 });
 
 // Itens do usuário (simulados)
 const userItems = ref([
     {
         id: 1,
-        title: 'Carteira de Couro Marrom',
-        description: 'Carteira de couro marrom perdida no Parque Central, contém documentos pessoais.',
-        status: 'perdido',
-        location: 'Parque Central',
-        created_at: '2025-03-10T15:30:00',
+        title: "Carteira de Couro Marrom",
+        description:
+            "Carteira de couro marrom perdida no Parque Central, contém documentos pessoais.",
+        status: "perdido",
+        location: "Parque Central",
+        created_at: "2025-03-10T15:30:00",
         category_id: 1,
     },
     {
         id: 2,
-        title: 'Relógio de Pulso Prateado',
-        description: 'Relógio de pulso prateado encontrado na Praça Central, marca Casio.',
-        status: 'achado',
-        location: 'Praça Central',
-        created_at: '2025-03-10T15:30:00',
-        found_date: '2025-03-09T18:30:00',
+        title: "Relógio de Pulso Prateado",
+        description:
+            "Relógio de pulso prateado encontrado na Praça Central, marca Casio.",
+        status: "achado",
+        location: "Praça Central",
+        created_at: "2025-03-10T15:30:00",
+        found_date: "2025-03-09T18:30:00",
         category_id: 3,
     },
     {
         id: 3,
-        title: 'Óculos de Grau Preto',
-        description: 'Óculos de grau com armação preta, perdido na Biblioteca Municipal.',
-        status: 'perdido',
-        location: 'Biblioteca Municipal',
-        created_at: '2025-03-09T18:45:00',
+        title: "Óculos de Grau Preto",
+        description:
+            "Óculos de grau com armação preta, perdido na Biblioteca Municipal.",
+        status: "perdido",
+        location: "Biblioteca Municipal",
+        created_at: "2025-03-09T18:45:00",
         category_id: 3,
     },
     {
         id: 4,
-        title: 'Chaves com Chaveiro',
-        description: 'Molho de chaves com chaveiro de guitarra, encontrado no Terminal de Ônibus.',
-        status: 'achado',
-        location: 'Terminal de Ônibus',
-        created_at: '2025-03-12T09:15:00',
-        found_date: '2025-03-11T17:00:00',
+        title: "Chaves com Chaveiro",
+        description:
+            "Molho de chaves com chaveiro de guitarra, encontrado no Terminal de Ônibus.",
+        status: "achado",
+        location: "Terminal de Ônibus",
+        created_at: "2025-03-12T09:15:00",
+        found_date: "2025-03-11T17:00:00",
         category_id: 5,
     },
     {
         id: 5,
-        title: 'Notebook Dell',
-        description: 'Notebook Dell Inspiron preto, encontrado na cafeteria.',
-        status: 'achado',
-        location: 'Cafeteria Central',
-        created_at: '2025-03-12T09:15:00',
-        found_date: '2025-03-11T17:00:00',
-        category_id: 5
-    }
+        title: "Notebook Dell",
+        description: "Notebook Dell Inspiron preto, encontrado na cafeteria.",
+        status: "achado",
+        location: "Cafeteria Central",
+        created_at: "2025-03-12T09:15:00",
+        found_date: "2025-03-11T17:00:00",
+        category_id: 5,
+    },
 ]);
 
 // Navitems
 const navItems = [
-    { id: 'dashboard', label: 'Painel', icon: HomeIcon },
-    { id: 'items', label: 'Meus Itens', icon: PackageIcon },
-    { id: 'messages', label: 'Mensagens', icon: MessageSquareIcon },
-    { id: 'profile', label: 'Perfil', icon: UserIcon },
-    { id: 'settings', label: 'Configurações', icon: SettingsIcon },
+    { id: "dashboard", label: "Painel", icon: HomeIcon },
+    { id: "items", label: "Meus Itens", icon: PackageIcon },
+    { id: "messages", label: "Mensagens", icon: MessageSquareIcon },
+    { id: "profile", label: "Perfil", icon: UserIcon },
+    { id: "settings", label: "Configurações", icon: SettingsIcon },
 ];
 
 // Mensagens do usuário (simuladas)
 const messages = ref([
     {
         id: 1,
-        sender: 'Maria Oliveira',
-        item: 'Carteira de Couro Marrom',
-        content: 'Olá, encontrei uma carteira que corresponde à sua descrição. Podemos combinar um local para verificar se é realmente a sua?',
-        date: '15/03/2025',
-        status: 'Não lida'
+        sender: "Maria Oliveira",
+        item: "Carteira de Couro Marrom",
+        content:
+            "Olá, encontrei uma carteira que corresponde à sua descrição. Podemos combinar um local para verificar se é realmente a sua?",
+        date: "15/03/2025",
+        status: "Não lida",
     },
     {
         id: 2,
-        sender: 'Carlos Santos',
-        item: 'Óculos de Grau Preto',
-        content: 'Boa tarde! Vi seu anúncio sobre os óculos perdidos. Encontrei um par semelhante na biblioteca. Pode me descrever algum detalhe específico para confirmar?',
-        date: '12/03/2025',
-        status: 'Lida'
-    }
+        sender: "Carlos Santos",
+        item: "Óculos de Grau Preto",
+        content:
+            "Boa tarde! Vi seu anúncio sobre os óculos perdidos. Encontrei um par semelhante na biblioteca. Pode me descrever algum detalhe específico para confirmar?",
+        date: "12/03/2025",
+        status: "Lida",
+    },
 ]);
 
 // Atividades recentes (simuladas)
 const activities = ref([
     {
         icon: PlusIcon,
-        title: 'Novo item cadastrado',
-        description: 'Você cadastrou "Carteira de Couro Marrom" como item perdido',
-        time: 'Hoje, 14:30',
-        color: 'primary'
+        title: "Novo item cadastrado",
+        description:
+            'Você cadastrou "Carteira de Couro Marrom" como item perdido',
+        time: "Hoje, 14:30",
+        color: "primary",
     },
     {
         icon: MessageSquareIcon,
-        title: 'Nova mensagem recebida',
-        description: 'Maria Oliveira enviou uma mensagem sobre "Carteira de Couro Marrom"',
-        time: 'Hoje, 15:45',
-        color: 'primary'
+        title: "Nova mensagem recebida",
+        description:
+            'Maria Oliveira enviou uma mensagem sobre "Carteira de Couro Marrom"',
+        time: "Hoje, 15:45",
+        color: "primary",
     },
     {
         icon: CheckCircleIcon,
-        title: 'Item recuperado',
+        title: "Item recuperado",
         description: 'Seu item "Bicicleta Caloi" foi marcado como recuperado',
-        time: '10/03/2025',
-        color: 'primary'
-    }
+        time: "10/03/2025",
+        color: "primary",
+    },
 ]);
 
 // Computed
 const filteredItems = computed(() => {
-    if (itemsFilter.value === 'all') {
+    if (itemsFilter.value === "all") {
         return userItems.value;
-    } else if (itemsFilter.value === 'lost') {
-        return userItems.value.filter(item => item.status === 'perdido');
-    } else if (itemsFilter.value === 'found') {
-        return userItems.value.filter(item => item.status === 'achado');
-    } else if (itemsFilter.value === 'recovered') {
-        return userItems.value.filter(item => item.status === 'resgatado');
+    } else if (itemsFilter.value === "lost") {
+        return userItems.value.filter((item) => item.status === "perdido");
+    } else if (itemsFilter.value === "found") {
+        return userItems.value.filter((item) => item.status === "achado");
+    } else if (itemsFilter.value === "recovered") {
+        return userItems.value.filter((item) => item.status === "resgatado");
     }
     return userItems.value;
 });
@@ -1098,13 +1108,13 @@ const filteredItems = computed(() => {
 const logout = async () => {
     try {
         await authStore.logout();
-        router.push('/auth/login');
+        router.push("/auth/login");
         toast({
-            title: 'Logout realizado',
-            description: 'Você foi desconectado com sucesso.',
+            title: "Logout realizado",
+            description: "Você foi desconectado com sucesso.",
         });
     } catch (error) {
-        console.error('Erro ao fazer logout:', error);
+        console.error("Erro ao fazer logout:", error);
     }
 };
 
@@ -1113,37 +1123,45 @@ const updateProfile = async () => {
         isUpdating.value = true;
 
         // Validação de senha
-        if (passwordForm.value.newPassword || passwordForm.value.confirmPassword || passwordForm.value.currentPassword) {
-            if (passwordForm.value.newPassword !== passwordForm.value.confirmPassword) {
+        if (
+            passwordForm.value.newPassword ||
+            passwordForm.value.confirmPassword ||
+            passwordForm.value.currentPassword
+        ) {
+            if (
+                passwordForm.value.newPassword !==
+                passwordForm.value.confirmPassword
+            ) {
                 toast({
-                    title: 'Erro',
-                    description: 'As senhas não coincidem',
-                    variant: 'destructive',
+                    title: "Erro",
+                    description: "As senhas não coincidem",
+                    variant: "destructive",
                 });
                 return;
             }
 
             if (!passwordForm.value.currentPassword) {
                 toast({
-                    title: 'Erro',
-                    description: 'Por favor, informe sua senha atual',
-                    variant: 'destructive',
+                    title: "Erro",
+                    description: "Por favor, informe sua senha atual",
+                    variant: "destructive",
                 });
                 return;
             }
 
             if (passwordForm.value.newPassword.length < 8) {
                 toast({
-                    title: 'Erro',
-                    description: 'A nova senha deve ter pelo menos 8 caracteres',
-                    variant: 'destructive',
+                    title: "Erro",
+                    description:
+                        "A nova senha deve ter pelo menos 8 caracteres",
+                    variant: "destructive",
                 });
                 return;
             }
         }
 
         // Simulando uma requisição
-        await new Promise(resolve => setTimeout(resolve, 1500));
+        await new Promise((resolve) => setTimeout(resolve, 1500));
 
         // Atualiza o usuário no store
         if (user.value) {
@@ -1152,22 +1170,22 @@ const updateProfile = async () => {
         }
 
         toast({
-            title: 'Perfil atualizado',
-            description: 'Suas informações foram atualizadas com sucesso',
+            title: "Perfil atualizado",
+            description: "Suas informações foram atualizadas com sucesso",
         });
 
         // Limpar formulário de senha
         passwordForm.value = {
-            currentPassword: '',
-            newPassword: '',
-            confirmPassword: ''
+            currentPassword: "",
+            newPassword: "",
+            confirmPassword: "",
         };
     } catch (error) {
-        console.error('Erro ao atualizar perfil:', error);
+        console.error("Erro ao atualizar perfil:", error);
         toast({
-            title: 'Erro',
-            description: 'Não foi possível atualizar o perfil',
-            variant: 'destructive',
+            title: "Erro",
+            description: "Não foi possível atualizar o perfil",
+            variant: "destructive",
         });
     } finally {
         isUpdating.value = false;
@@ -1180,15 +1198,15 @@ const resetProfileForm = () => {
         profileForm.value = {
             name: user.value.name,
             email: user.value.email,
-            phone: user.value.phone || '',
-            gender: user.value.gender || ''
+            phone: user.value.phone || "",
+            gender: user.value.gender || "",
         };
     }
 
     passwordForm.value = {
-        currentPassword: '',
-        newPassword: '',
-        confirmPassword: ''
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: "",
     };
 };
 
@@ -1197,18 +1215,18 @@ const saveSettings = async () => {
         isUpdating.value = true;
 
         // Simulando uma requisição
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise((resolve) => setTimeout(resolve, 1000));
 
         toast({
-            title: 'Configurações salvas',
-            description: 'Suas preferências foram atualizadas com sucesso',
+            title: "Configurações salvas",
+            description: "Suas preferências foram atualizadas com sucesso",
         });
     } catch (error) {
-        console.error('Erro ao salvar configurações:', error);
+        console.error("Erro ao salvar configurações:", error);
         toast({
-            title: 'Erro',
-            description: 'Não foi possível salvar as configurações',
-            variant: 'destructive',
+            title: "Erro",
+            description: "Não foi possível salvar as configurações",
+            variant: "destructive",
         });
     } finally {
         isUpdating.value = false;
@@ -1224,23 +1242,23 @@ const deleteAccount = async () => {
         isDeleting.value = true;
 
         // Simulando uma requisição
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        await new Promise((resolve) => setTimeout(resolve, 2000));
 
         // Logout após excluir a conta
         await authStore.logout();
 
-        router.push('/');
+        router.push("/");
 
         toast({
-            title: 'Conta excluída',
-            description: 'Sua conta foi excluída permanentemente',
+            title: "Conta excluída",
+            description: "Sua conta foi excluída permanentemente",
         });
     } catch (error) {
-        console.error('Erro ao excluir conta:', error);
+        console.error("Erro ao excluir conta:", error);
         toast({
-            title: 'Erro',
-            description: 'Não foi possível excluir a conta',
-            variant: 'destructive',
+            title: "Erro",
+            description: "Não foi possível excluir a conta",
+            variant: "destructive",
         });
     } finally {
         isDeleting.value = false;
@@ -1250,9 +1268,9 @@ const deleteAccount = async () => {
 
 const getInitials = (name: string) => {
     return name
-        .split(' ')
-        .map(part => part.charAt(0))
-        .join('')
+        .split(" ")
+        .map((part) => part.charAt(0))
+        .join("")
         .toUpperCase()
         .substring(0, 2);
 };
@@ -1260,20 +1278,14 @@ const getInitials = (name: string) => {
 // Inicialização
 onMounted(() => {
     // Carrega dados do usuário para o formulário
+    console.log("Usuário:", user.value);
     if (user.value) {
         profileForm.value = {
             name: user.value.name,
             email: user.value.email,
-            phone: user.value.phone || '',
-            gender: user.value.gender || ''
+            phone: user.value.phone || "",
+            gender: user.value.gender || "",
         };
     }
-
-    // Simulação de carregamento dos dados
-    isLoading.value = true;
-    setTimeout(() => {
-        isLoading.value = false;
-    }, 1000);
 });
 </script>
-

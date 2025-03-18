@@ -28,10 +28,10 @@ export const useAuthStore = defineStore("auth", () => {
             const response = (await authService.register(
                 user
             )) as IAuthResponse;
-            token.value = response.data.token;
+            token.value = response.data.data.token;
             isAuthenticated.value = true;
-            localStorage.setItem("token", response.data.token);
-            return response.data;
+            localStorage.setItem("token", response.data.data.token);
+            return response.data.data;
         } catch (e: any) {
             error.value = e.response?.data?.message || "Erro ao fazer login";
             throw e;
@@ -43,17 +43,17 @@ export const useAuthStore = defineStore("auth", () => {
     async function login(credentials: ILoginCredentials): Promise<IUser> {
         loading.value = true;
         error.value = null;
-
         console.log("credentials", credentials);
         try {
-            const response = (await authService.login(
+            const { data } = (await authService.login(
                 credentials
             )) as IAuthResponse;
-            user.value = response.data;
-            token.value = response.data.token;
+
+            user.value = data.data;
+            token.value = data.data.token;
             isAuthenticated.value = true;
-            localStorage.setItem("token", response.data.token);
-            return response.data;
+            localStorage.setItem("token", data.data.token);
+            return data.data;
         } catch (e: any) {
             error.value = e.response?.data?.message || "Erro ao fazer login";
             throw e;
@@ -68,6 +68,7 @@ export const useAuthStore = defineStore("auth", () => {
         } catch (e) {
             console.error("Erro ao fazer logout:", e);
         }
+
         user.value = null;
         token.value = null;
         isAuthenticated.value = false;
@@ -76,11 +77,11 @@ export const useAuthStore = defineStore("auth", () => {
 
     async function fetchUser(): Promise<void> {
         if (!token.value) return;
-
         loading.value = true;
         try {
-            const response = (await authService.me()) as IAuthResponse;
-            user.value = response.data;
+            const { data } = (await authService.me()) as IAuthResponse;
+
+            user.value = data.data;
             isAuthenticated.value = true;
         } catch (e) {
             user.value = null;

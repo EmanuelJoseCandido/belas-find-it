@@ -25,5 +25,7 @@ export interface ILoginCredentials {
 }
 
 export interface IAuthResponse {
-    data: IUser & { token: string };
+    data: {
+        data: IUser & { token: string };
+    };
 }
