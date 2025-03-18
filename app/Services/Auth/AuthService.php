@@ -104,20 +104,21 @@ class AuthService
     public function logout()
     {
 
-      /*   $accessToken = request()->bearerToken();
+        $user = request()->user();
 
-        dd(auth()->user());
-
-        TransientToken::
-
-        // Get access token from database
-        $token = PersonalAccessToken::findToken($accessToken);
-
-        // Revoke token
-        $token->delete(); */
+        if ($user) {
+            $token = $user->currentAccessToken();
 
 
-        request()->user()->currentAccessToken()->delete();
+            if ($token && !($token instanceof \Laravel\Sanctum\TransientToken)) {
+                $token->delete();
+            }
+
+            request()->session()->invalidate();
+            request()->session()->regenerateToken();
+        }
+
+        return true;
     }
 
     /**

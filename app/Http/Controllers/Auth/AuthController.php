@@ -54,6 +54,7 @@ class AuthController extends Controller
     public function login(LoginRequest $loginRequest)
     {
         $input = $loginRequest->validated();
+        unset($input['type']);
         $user = $this->authService->login($input);
         // $this->reCAPTCHA->verifyReCAPTCHA($input['recaptcha_token'], $loginRequest->ip());
 
