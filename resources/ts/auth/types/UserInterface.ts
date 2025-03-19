@@ -17,6 +17,8 @@ export interface IRegisterUser extends Omit<IUser, "id" | "role"> {
     terms: boolean;
 }
 
+export interface IProfileUser extends Omit<IUser, "id" | "role"> {}
+
 export interface ILoginCredentials {
     email?: string;
     phone?: number;

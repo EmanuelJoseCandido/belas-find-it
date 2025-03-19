@@ -40,6 +40,22 @@ export const useAuthStore = defineStore("auth", () => {
         }
     }
 
+    async function update(user: IRegisterUser): Promise<IUser> {
+        loading.value = true;
+        error.value = null;
+        try {
+            const response = (await authService.update(user)) as IAuthResponse;
+
+            return response.data.data;
+        } catch (e: any) {
+            error.value =
+                e.response?.data?.message || "Erro ao actualizar o perfil";
+            throw e;
+        } finally {
+            loading.value = false;
+        }
+    }
+
     async function login(credentials: ILoginCredentials): Promise<IUser> {
         loading.value = true;
         error.value = null;
@@ -106,6 +122,7 @@ export const useAuthStore = defineStore("auth", () => {
 
         login,
         logout,
+        update,
         register,
         fetchUser,
     };
