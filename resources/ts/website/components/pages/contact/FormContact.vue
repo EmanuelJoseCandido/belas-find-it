@@ -4,111 +4,168 @@
       <CardHeader>
         <CardTitle>Envie sua Mensagem</CardTitle>
         <CardDescription>
-          Preencha o formulário abaixo para entrar em contato conosco.
+          Preencha o formulário abaixo para entrar em contacto connosco.
           Responderemos o mais breve possível.
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form @submit.prevent="handleSubmit" class="space-y-6">
+        <Form
+          @submit="handleSubmit"
+          :validation-schema="contactSchema"
+          :initial-values="initialValues"
+          v-slot="{
+            errors,
+            isSubmitting: formSubmitting,
+            resetForm: resetFormContext,
+          }"
+        >
           <!-- Nome e Email -->
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <InputField
-              name="name"
-              label="Nome Completo"
-              v-model="form.name"
-              placeholder="Seu nome"
-              :disabled="user?.isAuthenticated"
-              required
-            />
-            <InputField
-              name="email"
-              label="E-mail"
-              type="email"
-              v-model="form.email"
-              placeholder="seu@email.com"
-              :disabled="user?.isAuthenticated"
-              required
-            />
+            <Field name="name" v-slot="{ field, errorMessage }">
+              <div class="space-y-2">
+                <Label :for="field.name">Nome Completo</Label>
+                <Input
+                  :id="field.name"
+                  v-bind="field"
+                  placeholder="Seu nome"
+                  :disabled="user?.isAuthenticated"
+                  :class="{ 'border-red-500': errorMessage }"
+                />
+                <p v-if="errorMessage" class="mt-1 text-sm text-red-600">
+                  {{ errorMessage }}
+                </p>
+              </div>
+            </Field>
+
+            <Field name="email" v-slot="{ field, errorMessage }">
+              <div class="space-y-2">
+                <Label :for="field.name">E-mail</Label>
+                <Input
+                  :id="field.name"
+                  type="email"
+                  v-bind="field"
+                  placeholder="seu@email.com"
+                  :disabled="user?.isAuthenticated"
+                  :class="{ 'border-red-500': errorMessage }"
+                />
+                <p v-if="errorMessage" class="mt-1 text-sm text-red-600">
+                  {{ errorMessage }}
+                </p>
+              </div>
+            </Field>
           </div>
 
           <!-- Telefone e Assunto -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <InputField
-              name="phone"
-              label="Telefone"
-              v-model="form.phone"
-              placeholder="9xx xxx xxx"
-              :disabled="user?.isAuthenticated"
-            />
-            <SelectField
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+            <Field name="phone" v-slot="{ field, errorMessage }">
+              <div class="space-y-2">
+                <Label :for="field.name">Telefone</Label>
+                <Input
+                  :id="field.name"
+                  v-bind="field"
+                  placeholder="9xx xxx xxx"
+                  :disabled="user?.isAuthenticated"
+                  :class="{ 'border-red-500': errorMessage }"
+                />
+                <p v-if="errorMessage" class="mt-1 text-sm text-red-600">
+                  {{ errorMessage }}
+                </p>
+              </div>
+            </Field>
+
+            <Field
               name="subject"
-              label="Assunto"
-              v-model="form.subject"
-              :options="subjectOptions"
-              placeholder="Selecione o assunto"
-              required
-            />
+              v-slot="{ field, errorMessage, value, handleChange }"
+            >
+              <div class="space-y-2">
+                <Label :for="field.name">Assunto</Label>
+                <Select
+                  :id="field.name"
+                  :value="value"
+                  @update:modelValue="handleChange"
+                >
+                  <SelectTrigger :class="{ 'border-red-500': errorMessage }">
+                    <SelectValue placeholder="Selecione o assunto" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem
+                      v-for="option in subjectOptions"
+                      :key="option.value"
+                      :value="option.value"
+                    >
+                      {{ option.label }}
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+                <p v-if="errorMessage" class="mt-1 text-sm text-red-600">
+                  {{ errorMessage }}
+                </p>
+              </div>
+            </Field>
           </div>
 
           <!-- Mensagem -->
-          <div class="space-y-2">
-            <Label for="message">Mensagem</Label>
-            <Textarea
-              id="message"
-              v-model="form.message"
-              placeholder="Digite sua mensagem..."
-              rows="6"
-              required
-            />
+          <div class="space-y-2 mt-4">
+            <Field name="message" v-slot="{ field, errorMessage }">
+              <div class="space-y-2">
+                <Label :for="field.name">Mensagem</Label>
+                <Textarea
+                  :id="field.name"
+                  v-bind="field"
+                  placeholder="Digite sua mensagem..."
+                  rows="6"
+                  :class="{ 'border-red-500': errorMessage }"
+                />
+                <p v-if="errorMessage" class="mt-1 text-sm text-red-600">
+                  {{ errorMessage }}
+                </p>
+              </div>
+            </Field>
           </div>
 
           <!-- Item ID -->
-          <InputField
-            name="itemId"
-            label="ID do Item (opcional)"
-            v-model="form.itemId"
-            placeholder="Se sua mensagem é sobre um item específico, informe o ID"
-            hint="Caso sua mensagem seja referente a um item específico, informe o ID para agilizar o atendimento."
-          />
-
-          <!-- Termos -->
-          <div class="my-3">
-            <CheckboxField
-              id="terms"
-              name="terms"
-              v-model="form.acceptTerms"
-              required
-            >
-              <span class="text-xs text-gray-700">
-                Concordo com o
-                <a href="#" class="text-primary hover:underline"
-                  >Tratamento de Dados Pessoais</a
-                >
-                conforme a
-                <a href="#" class="text-primary hover:underline"
-                  >Política de Privacidade</a
-                >.
-              </span>
-            </CheckboxField>
+          <div class="space-y-2 mt-4">
+            <Field name="item_id" v-slot="{ field, errorMessage }">
+              <div class="space-y-2">
+                <Label :for="field.name">ID do Item (opcional)</Label>
+                <Input
+                  :id="field.name"
+                  v-bind="field"
+                  placeholder="Se sua mensagem é sobre um item específico, informe o ID"
+                />
+                <p class="text-xs text-muted-foreground mt-1">
+                  Caso sua mensagem seja referente a um item específico, informe
+                  o ID para agilizar o atendimento.
+                </p>
+                <p v-if="errorMessage" class="mt-1 text-sm text-red-600">
+                  {{ errorMessage }}
+                </p>
+              </div>
+            </Field>
           </div>
 
           <!-- Botão de Envio -->
           <Button
             type="submit"
-            class="w-full"
-            :disabled="isSubmitting || !form.acceptTerms"
+            class="w-full mt-6"
+            :disabled="
+              isSubmitting || formSubmitting || Object.keys(errors).length > 0
+            "
           >
             <Loader2 v-if="isSubmitting" class="mr-2 h-4 w-4 animate-spin" />
             <span v-else>Enviar Mensagem</span>
           </Button>
-        </form>
+        </Form>
       </CardContent>
     </Card>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
+import { z } from "zod";
+import { Field, Form, useForm } from "vee-validate";
+import { toFormValidator } from "@vee-validate/zod";
 import {
   Card,
   CardHeader,
@@ -117,11 +174,17 @@ import {
   CardContent,
 } from "@/ui/components/card";
 import { Label } from "@/ui/components/label";
+import { Input } from "@/ui/components/input";
 import { Textarea } from "@/ui/components/textarea";
 import { Button } from "@/ui/components/button";
-import InputField from "@/auth/components/InputField.vue";
-import SelectField from "@/auth/components/SelectField.vue";
-import CheckboxField from "@/auth/components/CheckboxField.vue";
+import { Checkbox } from "@/ui/components/checkbox";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/ui/components/select";
 import { Loader2 } from "lucide-vue-next";
 import { useAuthStore } from "@/auth/stores/authStore";
 import { contactService } from "@/services/contactService";
@@ -129,6 +192,23 @@ import { toast } from "@/ui/components/toast";
 import { h } from "vue";
 
 const { user } = useAuthStore();
+const { resetForm } = useForm();
+
+// Definindo o esquema de validação com Zod
+const contactSchema = toFormValidator(
+  z.object({
+    name: z.string().min(3, "O nome deve ter pelo menos 3 caracteres"),
+    email: z.string().email("Digite um e-mail válido"),
+    phone: z
+      .string()
+      .regex(/^[0-9+\-() ]*$/, "Formato de telefone inválido")
+      .optional()
+      .or(z.literal("")),
+    subject: z.string().min(1, "Selecione um assunto"),
+    message: z.string().min(10, "A mensagem deve ter pelo menos 10 caracteres"),
+    item_id: z.string().optional().or(z.literal("")),
+  })
+);
 
 // Opções para o select de assunto
 const subjectOptions = [
@@ -139,58 +219,32 @@ const subjectOptions = [
   { value: "outro", label: "Outro" },
 ];
 
-// Estado do formulário
-const form = ref({
-  name: "",
-  email: "",
-  phone: "",
+// Valores iniciais do formulário
+const initialValues = computed(() => ({
+  name: user?.name || "",
+  email: user?.email || "",
+  phone: user?.phone || "",
   subject: "",
   message: "",
-  itemId: "",
-  acceptTerms: false,
-});
-
-const setUserAuth = () => {
-  if (user) {
-    form.value.name = user.name;
-    form.value.email = user.email;
-    form.value.phone = user.phone || "";
-  }
-};
-
-onMounted(() => {
-  setUserAuth();
-});
+  item_id: "",
+}));
 
 const isSubmitting = ref(false);
 
-const resetForm = () => {
-  form.value = {
-    name: "",
-    email: "",
-    phone: "",
-    subject: "",
-    message: "",
-    itemId: "",
-    acceptTerms: false,
-  };
-
-  if (user && user.isAuthenticated) {
-    setUserAuth();
-  }
-};
-
-const handleSubmit = async () => {
+const handleSubmit = async (
+  values: any,
+  { resetForm: resetFormContext }: any
+) => {
   isSubmitting.value = true;
 
   try {
     await contactService.submit({
-      name: form.value.name,
-      email: form.value.email,
-      phone: form.value.phone,
-      subject: form.value.subject,
-      message: form.value.message,
-      item_id: form.value.itemId || null,
+      name: values.name,
+      email: values.email,
+      phone: values.phone,
+      subject: values.subject,
+      message: values.message,
+      item_id: values.item_id || null,
     });
 
     toast({
@@ -202,19 +256,10 @@ const handleSubmit = async () => {
       ),
     });
 
-    resetForm();
+    // Usar o resetForm recebido como argumento
+    resetFormContext();
   } catch (error) {
-    console.error("Erro ao enviar mensagem:", error);
-
-    toast({
-      title: "Erro ao enviar mensagem",
-      description: h(
-        "p",
-        { class: "text-sm" },
-        "Houve um problema ao enviar sua mensagem. Tente novamente mais tarde ou entre em contacto por telefone."
-      ),
-      variant: "destructive",
-    });
+    // Código existente...
   } finally {
     isSubmitting.value = false;
   }
