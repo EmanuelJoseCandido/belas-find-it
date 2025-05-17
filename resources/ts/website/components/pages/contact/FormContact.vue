@@ -19,6 +19,7 @@
                 v-model="form.name"
                 placeholder="Seu nome"
                 required
+                :disabled="user?.isAuthenticated"
               />
             </div>
             <div class="space-y-2">
@@ -29,6 +30,7 @@
                 type="email"
                 placeholder="seu@email.com"
                 required
+                :disabled="user?.isAuthenticated"
               />
             </div>
           </div>
@@ -40,7 +42,8 @@
               <Input
                 id="phone"
                 v-model="form.phone"
-                placeholder="(00) 00000-0000"
+                placeholder="9xx xxx xxx"
+                :disabled="user?.isAuthenticated"
               />
             </div>
             <div class="space-y-2">
@@ -140,7 +143,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import {
   Card,
   CardHeader,
@@ -169,6 +172,9 @@ import {
   AlertTriangle as AlertTriangleIcon,
   Loader2,
 } from "lucide-vue-next";
+import { useAuthStore } from "@/auth/stores/authStore";
+
+const { user } = useAuthStore();
 
 // Estado do formulário
 const form = ref({
@@ -179,6 +185,18 @@ const form = ref({
   message: "",
   itemId: "",
   acceptTerms: false,
+});
+
+const setUserAuth = () => {
+  if (user) {
+    form.value.name = user.name;
+    form.value.email = user.email;
+    form.value.phone = user.phone;
+  }
+};
+
+onMounted(() => {
+  setUserAuth();
 });
 
 // Estado dos alertas e submissão
