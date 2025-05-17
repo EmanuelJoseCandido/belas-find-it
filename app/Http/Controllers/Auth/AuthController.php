@@ -9,11 +9,13 @@ use App\Http\Requests\Auth\ForgotPasswordRequest;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Requests\Auth\ResetPasswordRequest;
+use App\Http\Requests\Auth\UpdateRequest;
 use App\Http\Requests\Auth\VerifyPasswordRequest;
 use App\Http\Resources\UserResource;
 use App\Services\Auth\AuthService;
+use App\Services\Auth\UserService;
 use App\Services\Custom\External\RecaptchaService;
-
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
@@ -24,7 +26,7 @@ class AuthController extends Controller
      * @param  reCAPTCHA $reCAPTCHA
      * @return void
      */
-    public function __construct(protected AuthService $authService, protected RecaptchaService $reCAPTCHA)
+    public function __construct(protected AuthService $authService, protected UserService $userService, protected RecaptchaService $reCAPTCHA)
     {
     }
 
@@ -137,5 +139,18 @@ class AuthController extends Controller
         $input = $verifyPasswordRequest->validated();
         $validate = $this->authService->verifyPassword($input['password']);
         return response()->json($validate);
+    }
+
+    /**
+     * Handle a profile update
+     *
+     * @param UpdateRequest $updateRequest
+     * @return UserResource
+     */
+    public function updateProfile(UpdateRequest $updateRequest)
+    {
+        $input = $updateRequest->validated();
+        $user = $this->userService->update($input, Auth::user()->id);
+        return new UserResource($user);
     }
 }

@@ -6,6 +6,7 @@ import type {
     IRegisterUser,
     ILoginCredentials,
     IAuthResponse,
+    IProfileUser,
 } from "@/auth/types/UserInterface";
 
 export const useAuthStore = defineStore("auth", () => {
@@ -40,16 +41,36 @@ export const useAuthStore = defineStore("auth", () => {
         }
     }
 
-    async function update(user: IRegisterUser): Promise<IUser> {
+    async function updateProfile(profileData: IProfileUser): Promise<IUser> {
         loading.value = true;
         error.value = null;
         try {
-            const response = (await authService.update(user)) as IAuthResponse;
-
+            const response = (await authService.updateProfile(
+                profileData
+            )) as IAuthResponse;
+            user.value = { ...user.value, ...response.data.data };
             return response.data.data;
         } catch (e: any) {
             error.value =
-                e.response?.data?.message || "Erro ao actualizar o perfil";
+                e.response?.data?.message || "Erro ao atualizar o perfil";
+            throw e;
+        } finally {
+            loading.value = false;
+        }
+    }
+
+    async function updatePassword(passwordData: {
+        currentPassword: string;
+        password: string;
+        password_confirmation: string;
+    }): Promise<void> {
+        loading.value = true;
+        error.value = null;
+        try {
+            await authService.updatePassword(passwordData);
+        } catch (e: any) {
+            error.value =
+                e.response?.data?.message || "Erro ao atualizar a senha";
             throw e;
         } finally {
             loading.value = false;
@@ -122,7 +143,8 @@ export const useAuthStore = defineStore("auth", () => {
 
         login,
         logout,
-        update,
+        updateProfile,
+        updatePassword,
         register,
         fetchUser,
     };
