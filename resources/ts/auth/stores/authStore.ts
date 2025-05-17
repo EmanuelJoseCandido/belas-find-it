@@ -13,7 +13,6 @@ import type {
 
 export const useAuthStore = defineStore("auth", () => {
   const user = ref<IUser | null>(null);
-  const token = ref<string | null>(localStorage.getItem("token") || null);
   const loading = ref<boolean>(false);
   const error = ref<string | null>(null);
 
@@ -152,7 +151,6 @@ export const useAuthStore = defineStore("auth", () => {
 
   return {
     user,
-    token,
     loading,
     error,
 
