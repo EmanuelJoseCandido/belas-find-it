@@ -15,14 +15,24 @@
                     placeholder="Digite seu email ou telefone"
                     :error="errors.identifier"
                 />
-                <InputField
-                    name="password"
-                    label="Senha"
-                    v-model="form.password"
-                    type="password"
-                    placeholder="Digite sua senha"
-                    :error="errors.password"
-                />
+                <div class="relative">
+                    <InputField
+                        name="password"
+                        label="Senha"
+                        v-model="form.password"
+                        :type="showPassword ? 'text' : 'password'"
+                        placeholder="Digite sua senha"
+                        :error="errors.password"
+                    />
+                    <button
+                        type="button"
+                        class="absolute right-3 top-[34px] text-gray-500 hover:text-gray-700 focus:outline-none"
+                        @click="togglePasswordVisibility"
+                    >
+                        <EyeIcon v-if="showPassword" class="h-5 w-5" />
+                        <EyeOffIcon v-else class="h-5 w-5" />
+                    </button>
+                </div>
             </div>
             <div class="flex items-center justify-between mt-6 mb-4">
                 <div class="flex items-center">
@@ -66,6 +76,7 @@ import AuthLayout from "@/auth/layouts/AuthLayout.vue";
 import InputField from "@/auth/components/InputField.vue";
 import CheckboxField from "@/auth/components/CheckboxField.vue";
 import { Button } from "@/ui/components/button";
+import { Eye as EyeIcon, EyeOff as EyeOffIcon } from "lucide-vue-next";
 import { useAuthStore } from "@/auth/stores/authStore";
 import { toast } from "@/ui/components/toast";
 import { useRouter } from "vue-router";
@@ -90,6 +101,14 @@ const errors = ref({
 
 // Estado de carregamento
 const isLoading = ref(false);
+
+// Estado de visibilidade da senha
+const showPassword = ref(false);
+
+// Função para alternar a visibilidade da senha
+const togglePasswordVisibility = () => {
+    showPassword.value = !showPassword.value;
+};
 
 // Função para determinar o tipo de identificador (email ou telefone)
 const identifierType = computed((): TTypeLogin => {
