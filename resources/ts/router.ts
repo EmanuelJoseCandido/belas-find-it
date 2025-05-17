@@ -4,6 +4,7 @@ import { websiteRoutes } from "./website/router";
 import { authRoutes } from "./auth/router";
 import { useAuthStore } from "@/auth/stores/authStore";
 import { computed } from "vue";
+import cookie from "@/services/cookies/cookie";
 
 const routes = [...authRoutes, ...adminRoutes, ...websiteRoutes];
 
@@ -19,9 +20,10 @@ router.beforeEach(async (to, from, next) => {
     () => !!authStore.user && authStore.user.isAuthenticated === true
   );
 
-  console.log("");
-  
-  if (!authStore.user?.id && authStore.token) {
+  console.log("authStore: ", authStore);
+  console.log("isAuthenticated: ", isAuthenticated.value);
+
+  if (!authStore.user?.id && cookie.getToken()) {
     try {
       await authStore.getMe();
     } catch (error) {
