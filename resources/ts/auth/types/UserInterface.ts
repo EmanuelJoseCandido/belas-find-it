@@ -24,6 +24,7 @@ export interface ILoginCredentials {
   phone?: number;
   type: TTypeLogin;
   password: string;
+  remember: boolean;
 }
 
 export interface IAuthResponse {
