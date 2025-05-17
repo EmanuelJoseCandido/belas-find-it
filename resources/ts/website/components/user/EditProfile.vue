@@ -270,7 +270,7 @@ const userInitials = computed(() => {
 
 onMounted(() => {
     // Carrega dados do usuário para o formulário
-    console.log("Usuário:", user.value);
+
     if (user.value) {
         input.value = {
             name: user.value.name,

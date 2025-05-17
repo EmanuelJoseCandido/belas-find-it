@@ -20,9 +20,6 @@ router.beforeEach(async (to, from, next) => {
     () => !!authStore.user && authStore.user.isAuthenticated === true
   );
 
-  console.log("authStore: ", authStore);
-  console.log("isAuthenticated: ", isAuthenticated.value);
-
   if (!authStore.user?.id && cookie.getToken()) {
     try {
       await authStore.getMe();

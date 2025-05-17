@@ -156,7 +156,6 @@ const logout = async () => {
 onMounted(async () => {
   await authStore.getMe();
 
-  console.log("authStore.isAdmin: ", authStore.isAdmin)
   if (!authStore.isAdmin && !authStore.isModerator) {
     router.push("/");
   }
