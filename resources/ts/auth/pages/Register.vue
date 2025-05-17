@@ -7,81 +7,142 @@
       </p>
     </div>
 
-    <form @submit.prevent="onSubmit">
+    <Form
+      @submit="onSubmit"
+      :validation-schema="registerSchema"
+      v-slot="{
+        errors,
+        isSubmitting: formSubmitting,
+        resetForm: resetFormContext,
+      }"
+    >
       <div class="grid grid-cols-2 gap-3">
-        <InputField
-          name="name"
-          label="Nome completo"
-          v-model="form.name"
-          placeholder="Digite seu nome"
-          class="col-span-2"
-        />
-        <InputField
-          name="email"
-          label="Email"
-          v-model="form.email"
-          type="email"
-          placeholder="seu@email.com"
-          class="col-span-2"
-        />
-        <InputField
-          name="phone"
-          label="Telefone"
-          v-model="form.phone"
-          type="tel"
-          placeholder="9xx xxx xxx"
-          class="col-span-2 md:col-span-1"
-        />
-        <SelectField
+        <Field name="name" v-slot="{ field, errorMessage }">
+          <div class="col-span-2">
+            <Label :for="field.name">Nome completo</Label>
+            <Input
+              :id="field.name"
+              v-bind="field"
+              placeholder="Digite seu nome"
+              :class="{ 'border-red-500': errorMessage }"
+            />
+            <p v-if="errorMessage" class="mt-1 text-xs text-red-600">
+              {{ errorMessage }}
+            </p>
+          </div>
+        </Field>
+
+        <Field name="email" v-slot="{ field, errorMessage }">
+          <div class="col-span-2">
+            <Label :for="field.name">Email</Label>
+            <Input
+              :id="field.name"
+              type="email"
+              v-bind="field"
+              placeholder="seu@email.com"
+              :class="{ 'border-red-500': errorMessage }"
+            />
+            <p v-if="errorMessage" class="mt-1 text-xs text-red-600">
+              {{ errorMessage }}
+            </p>
+          </div>
+        </Field>
+
+        <Field name="phone" v-slot="{ field, errorMessage }">
+          <div class="col-span-2 md:col-span-1">
+            <Label :for="field.name">Telefone</Label>
+            <Input
+              :id="field.name"
+              v-bind="field"
+              placeholder="9xx xxx xxx"
+              :class="{ 'border-red-500': errorMessage }"
+            />
+            <p v-if="errorMessage" class="mt-1 text-xs text-red-600">
+              {{ errorMessage }}
+            </p>
+          </div>
+        </Field>
+
+        <Field
           name="gender"
-          label="Gênero"
-          v-model="form.gender"
-          :options="genderOptions"
-          placeholder="Selecione"
-          class="col-span-2 md:col-span-1"
-        />
-        <InputField
-          name="password"
-          label="Senha"
-          v-model="form.password"
-          type="password"
-          placeholder="Senha"
-        />
-        <InputField
-          name="password_confirmation"
-          label="Confirme a senha"
-          v-model="form.password_confirmation"
-          type="password"
-          placeholder="Confirme"
-        />
+          v-slot="{ field, errorMessage, value, handleChange }"
+        >
+          <div class="col-span-2 md:col-span-1">
+            <Label :for="field.name">Gênero</Label>
+            <Select
+              :id="field.name"
+              :value="value"
+              @update:modelValue="handleChange"
+            >
+              <SelectTrigger :class="{ 'border-red-500': errorMessage }">
+                <SelectValue placeholder="Selecione" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem
+                  v-for="option in genderOptions"
+                  :key="option.value"
+                  :value="option.value"
+                >
+                  {{ option.label }}
+                </SelectItem>
+              </SelectContent>
+            </Select>
+            <p v-if="errorMessage" class="mt-1 text-xs text-red-600">
+              {{ errorMessage }}
+            </p>
+          </div>
+        </Field>
+
+        <Field name="password" v-slot="{ field, errorMessage }">
+          <div class="col-span-1">
+            <Label :for="field.name">Senha</Label>
+            <Input
+              :id="field.name"
+              type="password"
+              v-bind="field"
+              placeholder="Senha"
+              :class="{ 'border-red-500': errorMessage }"
+            />
+            <p v-if="errorMessage" class="mt-1 text-xs text-red-600">
+              {{ errorMessage }}
+            </p>
+          </div>
+        </Field>
+
+        <Field name="password_confirmation" v-slot="{ field, errorMessage }">
+          <div class="col-span-1">
+            <Label :for="field.name">Confirme a senha</Label>
+            <Input
+              :id="field.name"
+              type="password"
+              v-bind="field"
+              placeholder="Confirme"
+              :class="{ 'border-red-500': errorMessage }"
+            />
+            <p v-if="errorMessage" class="mt-1 text-xs text-red-600">
+              {{ errorMessage }}
+            </p>
+          </div>
+        </Field>
       </div>
 
-      <div class="my-3">
-        <CheckboxField id="terms" name="terms" v-model="form.terms">
-          <span class="text-xs text-gray-700">
-            Eu concordo com os
-            <a href="#" class="text-primary-600 hover:text-primary-500"
-              >Termos</a
-            >
-            e
-            <a href="#" class="text-primary-600 hover:text-primary-500"
-              >Política de Privacidade</a
-            >
-          </span>
-        </CheckboxField>
-      </div>
-
-      <Button type="submit" class="w-full" :disabled="isLoading">
+      <Button
+        type="submit"
+        class="w-full mt-6"
+        :disabled="
+          isLoading || formSubmitting || Object.keys(errors).length > 0
+        "
+      >
         <span v-if="isLoading">Carregando...</span>
         <span v-else>Criar conta</span>
       </Button>
-    </form>
+    </Form>
 
     <p class="text-xs text-center mt-3">
       Já tem uma conta?
       <router-link
         :to="{ name: 'auth-login' }"
-        class="text-primary-600 font-medium hover:text-primary-500"
+        class="text-primary hover:underline font-medium"
       >
         Faça login
       </router-link>
@@ -90,20 +151,70 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from "vue";
+import { ref } from "vue";
 import { useRouter } from "vue-router";
-import type { IRegisterUser, TGenders } from "@/auth/types/UserInterface";
+import { z } from "zod";
+import { Field, Form } from "vee-validate";
+import { toFormValidator } from "@vee-validate/zod";
+import type { TGenders } from "@/auth/types/UserInterface";
 import AuthLayout from "@/auth/layouts/AuthLayout.vue";
 import { useAuthStore } from "@/auth/stores/authStore";
-import InputField from "@/auth/components/InputField.vue";
-import SelectField from "@/auth/components/SelectField.vue";
+import { Label } from "@/ui/components/label";
+import { Input } from "@/ui/components/input";
 import { Button } from "@/ui/components/button";
-import CheckboxField from "@/auth/components/CheckboxField.vue";
+import { Checkbox } from "@/ui/components/checkbox";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/ui/components/select";
 import { toast } from "@/ui/components/toast";
 import { h } from "vue";
 
 const router = useRouter();
 const authStore = useAuthStore();
+
+const registerSchema = toFormValidator(
+  z
+    .object({
+      name: z
+        .string({ required_error: "Campo obrigatório" })
+        .min(3, "O nome deve ter pelo menos 3 caracteres"),
+      email: z
+        .string({ required_error: "Campo obrigatório" })
+        .email("Digite um e-mail válido"),
+      phone: z
+        .string({ required_error: "Campo obrigatório" })
+        .regex(/^[0-9+\-() ]*$/, "Formato de telefone inválido")
+        .min(9, "O telefone deve ter pelo menos 9 dígitos"),
+      gender: z
+        .enum(["masculino", "feminino", "outro"], {
+          required_error: "Campo obrigatório",
+        })
+        .superRefine((val, ctx) => {
+          if (!val) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: "Selecione um gênero",
+            });
+          }
+        }),
+      password: z
+        .string({ required_error: "Campo obrigatório" })
+        .min(8, "A senha deve ter pelo menos 8 caracteres")
+        .regex(
+          /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)/,
+          "A senha deve conter pelo menos uma letra maiúscula, uma minúscula e um número"
+        ),
+      password_confirmation: z.string({ required_error: "Campo obrigatório" }),
+    })
+    .refine((data) => data.password === data.password_confirmation, {
+      message: "As senhas não coincidem",
+      path: ["password_confirmation"],
+    })
+);
 
 const genderOptions = [
   { value: "masculino", label: "Masculino" },
@@ -111,24 +222,21 @@ const genderOptions = [
   { value: "outro", label: "Outro" },
 ];
 
-const form = reactive<IRegisterUser>({
-  name: "",
-  email: "",
-  phone: "",
-  gender: "" as TGenders,
-  password: "",
-  password_confirmation: "",
-  terms: false,
-  isAuthenticated: false,
-});
-
 const isLoading = ref(false);
 
-const onSubmit = async () => {
+const onSubmit = async (values: any, { resetForm }: any) => {
   try {
     isLoading.value = true;
 
-    await authStore.register(form);
+    await authStore.register({
+      name: values.name,
+      email: values.email,
+      phone: values.phone,
+      gender: values.gender as TGenders,
+      password: values.password,
+      password_confirmation: values.password_confirmation,
+      isAuthenticated: false,
+    });
 
     toast({
       title: "Conta criada com sucesso!",
@@ -139,7 +247,6 @@ const onSubmit = async () => {
       ),
     });
 
-    // Redirecionamento baseado no tipo de usuário
     if (authStore.isAdmin || authStore.isModerator) {
       router.push({ name: "admin-dashboard" });
     } else {
@@ -147,6 +254,7 @@ const onSubmit = async () => {
     }
   } catch (error) {
     console.error("Erro ao registrar", error);
+
     toast({
       title: "Erro ao criar conta",
       description: h(

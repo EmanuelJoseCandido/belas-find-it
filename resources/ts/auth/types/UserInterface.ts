@@ -15,7 +15,6 @@ export type TTypeLogin = "email" | "phone";
 export interface IRegisterUser extends Omit<IUser, "id" | "role"> {
   password: string;
   password_confirmation: string;
-  terms: boolean;
 }
 
 export interface IProfileUser extends Omit<IUser, "id" | "role"> {}

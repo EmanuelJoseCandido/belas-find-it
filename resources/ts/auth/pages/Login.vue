@@ -7,7 +7,6 @@
       </p>
     </div>
 
-    {{ authStore }} -
     <Button type="submit" class="w-full" @click="authStore.logout()">
       Logout
     </Button>
