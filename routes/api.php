@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ClaimController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ItemController;
 use Illuminate\Support\Facades\Route;
 
@@ -66,8 +67,8 @@ Route::prefix('auth')->group(function () {
 /**
  * Contacts routes
  */
-Route::apiResource('contacts', ClaimController::class);
-Route::prefix('contacts')->controller(ClaimController::class)->group(function () {
+Route::apiResource('contacts', ContactController::class);
+Route::prefix('contacts')->controller(ContactController::class)->group(function () {
     Route::put('restore/{claim}', 'restore');
     Route::delete('force-delete/{claim}', 'forceDelete');
 });
