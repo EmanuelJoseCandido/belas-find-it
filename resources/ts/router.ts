@@ -3,40 +3,56 @@ import { adminRoutes } from "./admin/router";
 import { websiteRoutes } from "./website/router";
 import { authRoutes } from "./auth/router";
 import { useAuthStore } from "@/auth/stores/authStore";
+import { computed } from "vue";
 
 const routes = [...authRoutes, ...adminRoutes, ...websiteRoutes];
 
 const router = createRouter({
-    history: createWebHistory(),
-    routes,
+  history: createWebHistory(),
+  routes,
 });
 
-// Navigation guards
 router.beforeEach(async (to, from, next) => {
-    const authStore = useAuthStore();
+  const authStore = useAuthStore();
 
-    console.log("authStore", authStore);
+  const isAuthenticated = computed(
+    () => !!authStore.user && authStore.user.isAuthenticated === true
+  );
 
-    console.log("to", to);
-    // Try to fetch user data if we don't have it but have a token
-    if (!authStore.user && authStore.token) {
-        await authStore.fetchUser();
+  console.log("");
+  
+  if (!authStore.user?.id && authStore.token) {
+    try {
+      await authStore.getMe();
+    } catch (error) {
+      console.error("Erro ao buscar dados do usuário:", error);
+    }
+  }
+
+  if (to.meta.requiresAuth && !isAuthenticated.value) {
+    return next({
+      name: "auth-login",
+      query: { redirect: to.fullPath },
+    });
+  }
+
+  if (to.meta.requiresAdmin && !authStore.isAdmin) {
+    return next({ name: "home" });
+  }
+
+  if (isAuthenticated.value && to.path.startsWith("/auth")) {
+    if (authStore.isAdmin) {
+      return next({ name: "admin-dashboard" });
     }
 
-    // Check for protected routes
-    if (to.meta.requiresAuth && !authStore.isAuthenticated) {
-        next({ name: "auth-login", query: { redirect: to.fullPath } });
-    }
-    // Check for admin routes
-    else if (to.meta.requiresAdmin && !authStore.isAdmin) {
-        next({ name: "home" });
-    }
-    // Already logged in but trying to access auth pages
-    else if (authStore.isAuthenticated && to.path.startsWith("/auth")) {
-        next({ name: "home" });
-    } else {
-        next();
-    }
+    return next({ name: "home" });
+  }
+
+  if (isAuthenticated.value && to.path === "/" && authStore.isAdmin) {
+    return next({ name: "admin-dashboard" });
+  }
+
+  return next();
 });
 
 export default router;

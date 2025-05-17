@@ -15,6 +15,7 @@ use App\Models\UserModel;
 use App\Traits\Essentials\VerifyTypeUserTrait;
 use Exception;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use illuminate\Support\Str;
 use Laravel\Sanctum\PersonalAccessToken;
 use Laravel\Sanctum\TransientToken;
@@ -73,9 +74,21 @@ class AuthService
             throw new UserLoginUnauthorizedException();
         }
 
-        request()->session()->regenerate();
+        $user = Auth::user();
 
-        return $this->me();
+        Log::info('Login bem-sucedido', [
+            'user_id' => $user->id,
+            'email' => $user->email,
+            'ip' => request()->ip(),
+        ]);
+
+        $tokenName = 'auth_token';
+        $tokenExpiration = !empty($credentials['remember']) ? now()->addMonths(1) : now()->addDay();
+        $token = $user->createToken($tokenName, expiresAt: $tokenExpiration)->plainTextToken;
+
+        $user->token = $token;
+
+        return $user;
     }
 
 

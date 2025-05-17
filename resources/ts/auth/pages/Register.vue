@@ -29,7 +29,7 @@
                     label="Telefone"
                     v-model="form.phone"
                     type="tel"
-                    placeholder="(00) 00000-0000"
+                    placeholder="9xx xxx xxx"
                     class="col-span-2 md:col-span-1"
                 />
                 <SelectField
