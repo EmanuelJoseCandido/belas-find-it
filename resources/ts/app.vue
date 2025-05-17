@@ -14,7 +14,6 @@ import { Toaster } from "@/ui/components/toast";
 const authStore = useAuthStore();
 
 onMounted(async () => {
-  console.log("entrei aqui")
   await authStore.getMe();
 });
 </script>
