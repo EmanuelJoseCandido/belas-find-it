@@ -173,6 +173,7 @@ import {
   Loader2,
 } from "lucide-vue-next";
 import { useAuthStore } from "@/auth/stores/authStore";
+import { contactService } from "@/services/contactService";
 
 const { user } = useAuthStore();
 
@@ -204,37 +205,27 @@ const isSubmitting = ref(false);
 const formSuccess = ref(false);
 const formError = ref(false);
 
-// Manipular envio do formulário
+const resetForm = () => {
+  form.value = {
+    name: "",
+    email: "",
+    phone: "",
+    subject: "",
+    message: "",
+    itemId: "",
+    acceptTerms: false,
+  };
+};
+
 const handleSubmit = async () => {
   isSubmitting.value = true;
   formSuccess.value = false;
   formError.value = false;
 
   try {
-    // Em um ambiente real, enviaríamos os dados para a API
-    // const response = await fetch('/api/contact', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify(form.value)
-    // });
-    // if (!response.ok) throw new Error('Erro ao enviar mensagem');
-
-    // Simulando uma requisição
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-
-    // Mostrar sucesso
+    await contactService.submit(form.value);
     formSuccess.value = true;
-
-    // Resetar formulário
-    form.value = {
-      name: "",
-      email: "",
-      phone: "",
-      subject: "",
-      message: "",
-      itemId: "",
-      acceptTerms: false,
-    };
+    resetForm();
   } catch (error) {
     console.error("Erro ao enviar mensagem:", error);
     formError.value = true;

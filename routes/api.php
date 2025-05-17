@@ -63,6 +63,15 @@ Route::prefix('auth')->group(function () {
     Route::post('reset-password', [AuthController::class, 'resetPassword']);
 });
 
+/**
+ * Contacts routes
+ */
+Route::apiResource('contacts', ClaimController::class);
+Route::prefix('contacts')->controller(ClaimController::class)->group(function () {
+    Route::put('restore/{claim}', 'restore');
+    Route::delete('force-delete/{claim}', 'forceDelete');
+});
+
 
 
 /**
