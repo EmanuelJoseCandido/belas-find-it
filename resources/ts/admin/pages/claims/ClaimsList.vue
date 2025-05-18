@@ -46,7 +46,7 @@
     <FormDialog
       :key="formKey"
       v-model="showModal"
-      title="Atualizar Reivindicação"
+      title="Atualizar Reclamação"
       description="Atualize o status e a mensagem para esta reclamação."
       :schema="claimSchema"
       :form-values="formValues"
@@ -270,7 +270,7 @@ const saveClaim = async (values: Record<string, any>) => {
       await claimService.update(claimToEdit.value.id, values);
       toast({
         title: "Sucesso",
-        description: "Reivindicação atualizada com sucesso",
+        description: "Reclamação atualizada com sucesso",
       });
     }
 
@@ -328,14 +328,14 @@ const deleteClaim = async () => {
       await claimService.forceDelete(claimToDelete.value.id);
       toast({
         title: "Sucesso",
-        description: "Reivindicação excluída permanentemente",
+        description: "Reclamação excluída permanentemente",
       });
     } else {
       // Soft delete
       await claimService.delete(claimToDelete.value.id);
       toast({
         title: "Sucesso",
-        description: "Reivindicação excluída com sucesso",
+        description: "Reclamação excluída com sucesso",
       });
     }
 
@@ -364,7 +364,7 @@ const restoreClaim = async (claim: IClaim) => {
     await claimService.restore(claim.id);
     toast({
       title: "Sucesso",
-      description: "Reivindicação restaurada com sucesso",
+      description: "Reclamação restaurada com sucesso",
     });
 
     // Refresh the claims list
