@@ -9,8 +9,8 @@ export type TTemStatus = "perdido" | "achado" | "resgatado";
 // Interface para Itens
 export interface IItem {
   id: number;
-  ICategory_id: TNullable<number>;
-  IUser_id: number;
+  category_id: TNullable<number>;
+user_id: number;
   title: string;
   description: string;
   location: TNullable<string>;
@@ -22,9 +22,9 @@ export interface IItem {
   deleted_at: TNullable<TDateTimeString>;
 
   // Campos opcionais para relações
-  ICategory?: TNullable<ICategory>;
-  IUser?: IUser;
-  IClaims?: IClaim[];
+  category?: TNullable<ICategory>;
+  user?: IUser;
+  claims?: IClaim[];
 }
 
 // DTO para Criação de Item

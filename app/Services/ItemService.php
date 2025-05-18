@@ -22,8 +22,8 @@ class ItemService
      */
     public function getAll()
     {
-        if (!$this->verifyAdmin())
-            throw new UnauthorizedException();
+        /* if (!$this->verifyAdmin())
+            throw new UnauthorizedException(); */
         return ItemModel::withTrashed()->with($this->relations)->get();
     }
 
@@ -49,8 +49,8 @@ class ItemService
      */
     public function get(int $id)
     {
-        if (!$this->verifyAdmin())
-            throw new UnauthorizedException();
+       /*  if (!$this->verifyAdmin())
+            throw new UnauthorizedException(); */
         return ItemModel::withTrashed()->with($this->relations)->findOrFail($id);
     }
 

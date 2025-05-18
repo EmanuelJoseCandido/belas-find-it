@@ -22,8 +22,8 @@ class UserService
      */
     public function getAll()
     {
-        if (!$this->verifyAdmin())
-            throw new UnauthorizedException();
+       /*  if (!$this->verifyAdmin())
+            throw new UnauthorizedException(); */
         return UserModel::withTrashed()->with($this->relations)->get();
     }
 

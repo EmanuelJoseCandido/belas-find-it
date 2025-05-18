@@ -5,6 +5,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ClaimController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ItemController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -25,6 +26,14 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('me', [AuthController::class, 'me']);
     });
 
+     /**
+     * Users routes
+     */
+    Route::apiResource('users', UserController::class);
+    Route::prefix('users')->controller(UserController::class)->group(function () {
+        Route::put('restore/{category}', 'restore');
+        Route::delete('force-delete/{category}', 'forceDelete');
+    });
 
     /**
      * Categories routes
