@@ -11,9 +11,9 @@ use Illuminate\Support\Facades\Route;
 /**
  * Only private routes
  */
-
+/*
 Route::middleware('auth:sanctum')->group(function () {
-
+ */
     /**
      * Auth Routes
      */
@@ -26,7 +26,14 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
 
-
+    /**
+     * Categories routes
+     */
+    Route::apiResource('categories', CategoryController::class);
+    Route::prefix('categories')->controller(CategoryController::class)->group(function () {
+        Route::put('restore/{category}', 'restore');
+        Route::delete('force-delete/{category}', 'forceDelete');
+    });
 
     /**
      * Items routes
@@ -45,7 +52,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('restore/{claim}', 'restore');
         Route::delete('force-delete/{claim}', 'forceDelete');
     });
-});
+/* }); */
 
 /**
  * Public Routes
@@ -67,14 +74,6 @@ Route::prefix('contacts')->controller(ContactController::class)->group(function 
 });
 
 
-/**
- * Categories routes
- */
-Route::apiResource('categories', CategoryController::class);
-Route::prefix('categories')->controller(CategoryController::class)->group(function () {
-    Route::put('restore/{category}', 'restore');
-    Route::delete('force-delete/{category}', 'forceDelete');
-});
 
 /**
  * Fallback for not registered routes

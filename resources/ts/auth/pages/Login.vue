@@ -15,9 +15,7 @@
       <div class="space-y-3">
         <div class="flex gap-4">
           <Button type="button" @click="authStore.logout()">Logout</Button>
-          <Button type="button" @click="categoryService.getAll()"
-            >GetAll</Button
-          >
+          <Button type="button" @click="claimService.getAll()">GetAll</Button>
         </div>
 
         <Field name="identifier" v-slot="{ field, errorMessage }">
@@ -114,9 +112,8 @@ import { Eye as EyeIcon, EyeOff as EyeOffIcon } from "lucide-vue-next";
 import { useAuthStore } from "@/auth/stores/authStore";
 import { toast } from "@/ui/components/toast";
 import { useRouter } from "vue-router";
-import { h } from "vue";
 import type { ILoginCredentials, TTypeLogin } from "@/auth/types/UserInterface";
-import { categoryService } from "@/services/categoryService";
+import { claimService } from "@/services/claimService";
 
 const authStore = useAuthStore();
 const router = useRouter();
