@@ -57,8 +57,10 @@ class AuthService
      *
      * @throws SessionRequestException |LoginInvalidException | UserBlockedException | UserLoginUnauthorizedException
      */
-    public function login(array $credentials)
+    public function login(array $credentials, bool $remember)
     {
+
+
         if (Auth::check())
             throw new SessionRequestException();
         if (!Auth::attempt($credentials))
@@ -83,7 +85,7 @@ class AuthService
         ]);
 
         $tokenName = 'auth_token';
-        $tokenExpiration = !empty($credentials['remember']) ? now()->addMonths(1) : now()->addDay();
+        $tokenExpiration = $remember ? now()->addMonths(1) : now()->addDay();
         $token = $user->createToken($tokenName, expiresAt: $tokenExpiration)->plainTextToken;
 
         $user->token = $token;

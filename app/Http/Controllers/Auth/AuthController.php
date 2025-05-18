@@ -56,9 +56,11 @@ class AuthController extends Controller
     public function login(LoginRequest $loginRequest)
     {
         $input = $loginRequest->validated();
+        $remember = $input['remember'];
+
         unset($input['type']);
-        $user = $this->authService->login($input);
-        // $this->reCAPTCHA->verifyReCAPTCHA($input['recaptcha_token'], $loginRequest->ip());
+        unset($input['remember']);
+        $user = $this->authService->login($input, $remember);
 
         return new UserResource($user);
     }
@@ -99,7 +101,7 @@ class AuthController extends Controller
      */
     public function changePassword(ChangePasswordRequest $changePasswordRequest)
     {
-        if (auth()->user() != null) {
+        if (Auth::user() != null) {
             $input = $changePasswordRequest->validated();
             $this->authService->changePassword($input['old_password'], $input['password']);
         }
