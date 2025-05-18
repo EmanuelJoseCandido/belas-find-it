@@ -1,10 +1,6 @@
 <template>
-  <AdminLayout>
+  <div>
     <h2>Dashboard</h2>
     <router-link to="/"> Take me to Test page </router-link>
-  </AdminLayout>
+  </div>
 </template>
-
-<script setup lang="ts">
-import AdminLayout from "@/admin/layouts/AdminLayout.vue";
-</script>
