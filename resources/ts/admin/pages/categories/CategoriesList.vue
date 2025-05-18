@@ -90,7 +90,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
 import { z } from "zod";
-import { Field, FieldProps, Form } from "vee-validate";
+import { Field } from "vee-validate";
 import { toFormValidator } from "@vee-validate/zod";
 import { toast } from "@/ui/components/toast";
 import { Button } from "@/ui/components/button";
@@ -107,6 +107,8 @@ import ConfirmDialog from "@/admin/components/common/ConfirmDialog.vue";
 import ActionButtons from "@/admin/components/common/ActionButtons.vue";
 import StatusBadge from "@/admin/components/common/StatusBadge.vue";
 
+import { ICategory } from "@/admin/types/ICategory";
+
 // Definição das colunas
 const columns = [
   { key: "id", label: "ID", class: "w-[80px]" },
@@ -116,23 +118,16 @@ const columns = [
   { key: "actions", label: "Ações", class: "text-right" },
 ];
 
-// Tipagem das categorias e outros estados
-interface Category {
-  id: number;
-  name: string;
-  deleted_at: string | null;
-  items: any[];
-}
 const formKey = ref(0);
-const categories = ref<Category[]>([]);
+const categories = ref<ICategory[]>([]);
 const loading = ref<boolean>(true);
 const error = ref<string | null>(null);
 const showModal = ref<boolean>(false);
 const showDeleteModal = ref<boolean>(false);
 const isEditing = ref<boolean>(false);
 const isSubmitting = ref<boolean>(false);
-const categoryToEdit = ref<Category | null>(null);
-const categoryToDelete = ref<Category | null>(null);
+const categoryToEdit = ref<ICategory | null>(null);
+const categoryToDelete = ref<ICategory | null>(null);
 const forceDelete = ref<boolean>(false);
 
 // Validação do formulário
@@ -203,7 +198,7 @@ const resetFormWithValues = () => {
 };
 
 // Modifique a função openEditModal
-const openEditModal = (category: Category) => {
+const openEditModal = (category: ICategory) => {
   isEditing.value = true;
   categoryToEdit.value = category;
   formKey.value++;
@@ -215,7 +210,7 @@ const handleCancelForm = () => {
   // Reset the form is handled by the FormDialog component
 };
 
-const saveCategory = async (values: { name: string }) => {
+const saveCategory = async (values: Record<string, any>) => {
   try {
     isSubmitting.value = true;
 
@@ -254,13 +249,13 @@ const saveCategory = async (values: { name: string }) => {
   }
 };
 
-const confirmDelete = (category: Category) => {
+const confirmDelete = (category: ICategory) => {
   categoryToDelete.value = category;
   forceDelete.value = false;
   showDeleteModal.value = true;
 };
 
-const confirmForceDelete = (category: Category) => {
+const confirmForceDelete = (category: ICategory) => {
   categoryToDelete.value = category;
   forceDelete.value = true;
   showDeleteModal.value = true;
@@ -317,7 +312,7 @@ const deleteCategory = async () => {
   }
 };
 
-const restoreCategory = async (category: Category) => {
+const restoreCategory = async (category: ICategory) => {
   try {
     isSubmitting.value = true;
 
