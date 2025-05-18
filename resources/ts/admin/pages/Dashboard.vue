@@ -131,93 +131,99 @@
         <CardHeader class="px-6 pb-3">
           <div class="flex items-center justify-between">
             <CardTitle>Atividades Recentes</CardTitle>
-            <Tabs v-model="activeTab" class="w-auto">
-              <TabsList class="grid grid-cols-2 w-[250px]">
-                <TabsTrigger value="activities">Atividades</TabsTrigger>
-                <TabsTrigger value="messages">Mensagens</TabsTrigger>
-              </TabsList>
-            </Tabs>
           </div>
         </CardHeader>
 
-        <CardContent class="px-6">
-          <!-- Activities Tab -->
-          <TabsContent value="activities" class="m-0 p-0">
-            <div v-if="loading.activities" class="flex justify-center py-6">
-              <Loader2 class="h-8 w-8 animate-spin text-primary" />
-            </div>
-            <div
-              v-else-if="recentActivities.length === 0"
-              class="py-6 text-center"
-            >
-              <ActivityIcon
-                class="h-12 w-12 mx-auto text-muted-foreground mb-3"
-              />
-              <p class="text-muted-foreground">Nenhuma atividade recente</p>
-            </div>
-            <div v-else class="space-y-4">
-              <div
-                v-for="(activity, index) in recentActivities"
-                :key="index"
-                class="flex items-start gap-4 py-2"
-              >
-                <div class="bg-primary/10 p-2 rounded-full flex-shrink-0">
-                  <component :is="activity.icon" class="h-4 w-4 text-primary" />
-                </div>
-                <div>
-                  <p class="font-medium">{{ activity.description }}</p>
-                  <p class="text-sm text-muted-foreground mt-1">
-                    {{ activity.user }}
-                  </p>
-                  <p class="text-xs text-muted-foreground">
-                    {{ formatTimeAgo(activity.time) }}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </TabsContent>
+        <Tabs v-model="activeTab" class="w-full">
+          <div class="px-6 mb-4">
+            <TabsList class="grid grid-cols-2 w-[250px]">
+              <TabsTrigger value="activities">Atividades</TabsTrigger>
+              <TabsTrigger value="messages">Mensagens</TabsTrigger>
+            </TabsList>
+          </div>
 
-          <!-- Messages Tab -->
-          <TabsContent value="messages" class="m-0 p-0">
-            <div v-if="loading.messages" class="flex justify-center py-6">
-              <Loader2 class="h-8 w-8 animate-spin text-primary" />
-            </div>
-            <div
-              v-else-if="recentMessages.length === 0"
-              class="py-6 text-center"
-            >
-              <MessageSquareIcon
-                class="h-12 w-12 mx-auto text-muted-foreground mb-3"
-              />
-              <p class="text-muted-foreground">Nenhuma mensagem recente</p>
-            </div>
-            <div v-else class="space-y-4">
+          <CardContent class="px-6">
+            <!-- Activities Tab -->
+            <TabsContent value="activities" class="m-0 p-0">
+              <div v-if="loading.activities" class="flex justify-center py-6">
+                <Loader2 class="h-8 w-8 animate-spin text-primary" />
+              </div>
               <div
-                v-for="message in recentMessages"
-                :key="message.id"
-                class="flex items-start gap-4 py-2"
+                v-else-if="recentActivities.length === 0"
+                class="py-6 text-center"
               >
-                <div class="flex-shrink-0">
-                  <Avatar>
-                    <AvatarFallback>{{
-                      getInitials(message.name)
-                    }}</AvatarFallback>
-                  </Avatar>
-                </div>
-                <div class="flex-grow min-w-0">
-                  <div class="flex items-center gap-2">
-                    <h4 class="font-medium">{{ message.name }}</h4>
-                    <Badge>{{ message.status }}</Badge>
+                <ActivityIcon
+                  class="h-12 w-12 mx-auto text-muted-foreground mb-3"
+                />
+                <p class="text-muted-foreground">Nenhuma atividade recente</p>
+              </div>
+              <div v-else class="space-y-4">
+                <div
+                  v-for="(activity, index) in recentActivities"
+                  :key="index"
+                  class="flex items-start gap-4 py-2"
+                >
+                  <div class="bg-primary/10 p-2 rounded-full flex-shrink-0">
+                    <component
+                      :is="activity.icon"
+                      class="h-4 w-4 text-primary"
+                    />
                   </div>
-                  <p class="text-sm truncate">{{ message.subject }}</p>
-                  <p class="text-xs text-muted-foreground">
-                    {{ formatDate(message.created_at) }}
-                  </p>
+                  <div>
+                    <p class="font-medium">{{ activity.description }}</p>
+                    <p class="text-sm text-muted-foreground mt-1">
+                      {{ activity.user }}
+                    </p>
+                    <p class="text-xs text-muted-foreground">
+                      {{ formatTimeAgo(activity.time) }}
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
-          </TabsContent>
-        </CardContent>
+            </TabsContent>
+
+            <!-- Messages Tab -->
+            <TabsContent value="messages" class="m-0 p-0">
+              <div v-if="loading.messages" class="flex justify-center py-6">
+                <Loader2 class="h-8 w-8 animate-spin text-primary" />
+              </div>
+              <div
+                v-else-if="recentMessages.length === 0"
+                class="py-6 text-center"
+              >
+                <MessageSquareIcon
+                  class="h-12 w-12 mx-auto text-muted-foreground mb-3"
+                />
+                <p class="text-muted-foreground">Nenhuma mensagem recente</p>
+              </div>
+              <div v-else class="space-y-4">
+                <div
+                  v-for="message in recentMessages"
+                  :key="message.id"
+                  class="flex items-start gap-4 py-2"
+                >
+                  <div class="flex-shrink-0">
+                    <Avatar>
+                      <AvatarFallback>{{
+                        getInitials(message.name)
+                      }}</AvatarFallback>
+                    </Avatar>
+                  </div>
+                  <div class="flex-grow min-w-0">
+                    <div class="flex items-center gap-2">
+                      <h4 class="font-medium">{{ message.name }}</h4>
+                      <Badge>{{ message.status }}</Badge>
+                    </div>
+                    <p class="text-sm truncate">{{ message.subject }}</p>
+                    <p class="text-xs text-muted-foreground">
+                      {{ formatDate(message.created_at) }}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </TabsContent>
+          </CardContent>
+        </Tabs>
 
         <CardFooter class="px-6 pt-0 border-t">
           <Button

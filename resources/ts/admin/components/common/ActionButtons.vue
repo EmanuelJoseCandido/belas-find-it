@@ -49,24 +49,44 @@ import {
   RefreshCw as RefreshCwIcon,
 } from "lucide-vue-next";
 
-// Definindo a interface de props
-interface IItem {
-  deleted_at: string | null;
-}
+const props = defineProps({
+  item: {
+    type: Object,
+    required: true
+  },
+  showEdit: {
+    type: Boolean,
+    default: true
+  },
+  showDelete: {
+    type: Boolean,
+    default: true
+  },
+  showRestore: {
+    type: Boolean,
+    default: true
+  },
+  showForceDelete: {
+    type: Boolean,
+    default: true
+  },
+  editText: {
+    type: String,
+    default: 'Editar'
+  },
+  deleteText: {
+    type: String,
+    default: 'Excluir'
+  },
+  restoreText: {
+    type: String,
+    default: 'Restaurar'
+  },
+  forceDeleteText: {
+    type: String,
+    default: 'Excluir Perm.'
+  }
+});
 
-interface IProps {
-  item: IItem;
-  showEdit?: boolean;
-  showDelete?: boolean;
-  showRestore?: boolean;
-  showForceDelete?: boolean;
-  editText?: string;
-  deleteText?: string;
-  restoreText?: string;
-  forceDeleteText?: string;
-}
-
-const props = defineProps<IProps>();
-
-defineEmits(["edit", "delete", "restore", "forceDelete"]);
+defineEmits(['edit', 'delete', 'restore', 'forceDelete']);
 </script>

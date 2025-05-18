@@ -26,14 +26,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
 
-    /**
-     * Categories routes
-     */
-    Route::apiResource('categories', CategoryController::class);
-    Route::prefix('categories')->controller(CategoryController::class)->group(function () {
-        Route::put('restore/{category}', 'restore');
-        Route::delete('force-delete/{category}', 'forceDelete');
-    });
+
 
     /**
      * Items routes
@@ -74,6 +67,14 @@ Route::prefix('contacts')->controller(ContactController::class)->group(function 
 });
 
 
+/**
+ * Categories routes
+ */
+Route::apiResource('categories', CategoryController::class);
+Route::prefix('categories')->controller(CategoryController::class)->group(function () {
+    Route::put('restore/{category}', 'restore');
+    Route::delete('force-delete/{category}', 'forceDelete');
+});
 
 /**
  * Fallback for not registered routes

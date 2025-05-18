@@ -35,10 +35,10 @@ api.interceptors.response.use(
       if (router.currentRoute.value.name !== "auth-login") {
         const currentPath = router.currentRoute.value.fullPath;
 
-        router.push({
+       /*  router.push({
           name: "auth-login",
           query: { redirect: currentPath },
-        });
+        }); */
       }
     }
 

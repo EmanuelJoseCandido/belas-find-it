@@ -9,7 +9,7 @@
       </DialogHeader>
 
       <DialogFooter>
-        <Button variant="outline" @click="cancel">
+        <Button v-if="props.cancelText" variant="outline" @click="cancel">
           {{ props.cancelText }}
         </Button>
         <Button

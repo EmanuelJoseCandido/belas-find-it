@@ -19,8 +19,8 @@ class CategoryService
      */
     public function getAll()
     {
-        if (!$this->verifyAdmin())
-            throw new UnauthorizedException();
+       /*  if (!$this->verifyAdmin())
+            throw new UnauthorizedException(); */
         return CategoryModel::withTrashed()->with($this->relations)->get();
     }
 
@@ -44,8 +44,8 @@ class CategoryService
      */
     public function get(int $id)
     {
-        if (!$this->verifyAdmin())
-            throw new UnauthorizedException();
+     /*    if (!$this->verifyAdmin())
+            throw new UnauthorizedException(); */
         return CategoryModel::withTrashed()->with($this->relations)->findOrFail($id);
     }
 

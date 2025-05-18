@@ -23,6 +23,7 @@
 
         <DialogFooter class="mt-6">
           <Button
+            v-if="props.cancelText"
             type="button"
             variant="outline"
             @click="handleCancel(resetFormContext)"

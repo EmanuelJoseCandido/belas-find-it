@@ -15,7 +15,7 @@ const router = createRouter({
 
 router.beforeEach(async (to, from, next) => {
   const authStore = useAuthStore();
-
+/*
   const isAuthenticated = computed(
     () => !!authStore.user && authStore.user.isAuthenticated === true
   );
@@ -50,7 +50,7 @@ router.beforeEach(async (to, from, next) => {
   if (isAuthenticated.value && to.path === "/" && authStore.isAdmin) {
     return next({ name: "admin-dashboard" });
   }
-
+ */
   return next();
 });
 

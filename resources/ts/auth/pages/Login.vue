@@ -13,6 +13,13 @@
       v-slot="{ errors: formErrors, isSubmitting: formSubmitting }"
     >
       <div class="space-y-3">
+        <div class="flex gap-4">
+          <Button type="button" @click="authStore.logout()">Logout</Button>
+          <Button type="button" @click="categoryService.getAll()"
+            >GetAll</Button
+          >
+        </div>
+
         <Field name="identifier" v-slot="{ field, errorMessage }">
           <div>
             <Label :for="field.name">Email ou Telefone</Label>
@@ -109,6 +116,7 @@ import { toast } from "@/ui/components/toast";
 import { useRouter } from "vue-router";
 import { h } from "vue";
 import type { ILoginCredentials, TTypeLogin } from "@/auth/types/UserInterface";
+import { categoryService } from "@/services/categoryService";
 
 const authStore = useAuthStore();
 const router = useRouter();
