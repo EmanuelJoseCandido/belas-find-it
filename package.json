@@ -29,6 +29,7 @@
         "@vee-validate/i18n": "^4.15.0",
         "@vee-validate/zod": "^4.15.0",
         "@vueuse/core": "^12.8.2",
+        "dayjs": "^1.11.13",
         "js-cookie": "^3.0.5",
         "lucide-vue-next": "^0.479.0",
         "motion-v": "^0.11.3",
