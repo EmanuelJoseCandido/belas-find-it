@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Traits\Essentials;
 use Illuminate\Support\Facades\Storage;
 
@@ -15,12 +16,9 @@ trait FileTrait
     {
         if (($file->isValid())) {
             $ficheiro = date('YmdHis') . $key . '.' . $file->getClientOriginalExtension();
-
-            // Armazenar no disco 'public'
             $storagePath = $file->storeAs($path, $ficheiro, 'public');
 
-            // Retorna a URL pública completa
-            return asset('storage/' . $storagePath);
+            return Storage::disk('public')->url($storagePath);
         }
         return null;
     }
@@ -61,11 +59,13 @@ trait FileTrait
      * Remove uma directorio especifico.
      *
      * @param string $path
+     * @return bool
      */
-    public function destroyPath(string $path)
+    public function destroyPath(string $path): bool
     {
         if (Storage::disk('public')->exists($path)) {
             return Storage::disk('public')->deleteDirectory($path);
         }
+        return false;
     }
 }
