@@ -18,10 +18,7 @@ export interface IUser {
   email_verified_at: TNullable<TDateTimeString>;
   role: TUserRole;
   gender: TGender;
-  is_blocked: boolean;
-  is_login: boolean;
-  is_tour: boolean;
-  is_changed_password_once: boolean;
+  is_active: boolean;
   created_at: TDateTimeString;
   updated_at: TNullable<TDateTimeString>;
   deleted_at: TNullable<TDateTimeString>;

@@ -7,7 +7,7 @@ use App\Exceptions\Auth\ChangePasswordInvalidException;
 use App\Exceptions\Auth\LoginInvalidException;
 use App\Exceptions\Auth\ResetPasswordSameInvalidException;
 use App\Exceptions\Auth\ResetPasswordTokenInvalidException;
-use App\Exceptions\Auth\UserBlockedException;
+use App\Exceptions\Auth\UserInactiveException;
 use App\Exceptions\Auth\UserLoginUnauthorizedException;
 use App\Exceptions\Auth\SessionRequestException;
 use App\Models\Auth\PasswordResetModel;
@@ -55,7 +55,7 @@ class AuthService
      * Verify if user is blocked
      * Generate new session
      *
-     * @throws SessionRequestException |LoginInvalidException | UserBlockedException | UserLoginUnauthorizedException
+     * @throws SessionRequestException |LoginInvalidException | UserInactiveException | UserLoginUnauthorizedException
      */
     public function login(array $credentials, bool $remember)
     {
@@ -66,15 +66,11 @@ class AuthService
         if (!Auth::attempt($credentials))
             throw new LoginInvalidException();
 
-        if ($this->verifyBlockedStatus()) {
+        if ($this->verifyActiveStatus()) {
             $this->logout();
-            throw new UserBlockedException();
+            throw new UserInactiveException();
         }
 
-        if (!$this->verifyLoginStatus()) {
-            $this->logout();
-            throw new UserLoginUnauthorizedException();
-        }
 
         $user = Auth::user();
 

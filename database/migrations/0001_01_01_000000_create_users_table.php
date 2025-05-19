@@ -18,15 +18,11 @@ return new class extends Migration {
             $table->string('slug')->unique();
             $table->string('email')->unique();
             $table->string('phone')->unique();
-            $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->enum('role', RoleEnum::values())->default(RoleEnum::USER->value);
             $table->enum('gender', GenderEnum::values());
 
-            $table->boolean('is_blocked')->default(true);
-            $table->boolean('is_login')->default(false);
-            $table->boolean('is_tour')->default(true);
-            $table->boolean('is_changed_password_once')->default(false);
+            $table->boolean('is_active')->default(true);
 
             $table->rememberToken();
             $table->timestamps();

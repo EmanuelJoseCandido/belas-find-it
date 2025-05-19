@@ -47,9 +47,9 @@
         </Badge>
       </template>
 
-      <!-- Status column -->
-      <template #status="{ item }">
-        <StatusBadge :status="!item.is_blocked" />
+      <!-- Active column -->
+      <template #is_active="{ item }">
+        <StatusBadge :value="!item.is_active" />
       </template>
 
       <!-- Email column -->
@@ -80,11 +80,11 @@
           @delete="confirmDelete"
           @restore="restoreUser"
           @forceDelete="confirmForceDelete"
-          @block="confirmBlockUser"
-          @unblock="confirmUnblockUser"
+          @active="confirmActiveUser"
+          @inactive="confirmInactiveUser"
           :disabled="authStore.user?.id === item.id"
-          :show-block="!item.is_blocked && !item.deleted_at"
-          :show-unblock="item.is_blocked && !item.deleted_at"
+          :show-active="!item.is_active && !item.deleted_at"
+          :show-inactive="item.is_active && !item.deleted_at"
         />
       </template>
     </DataTable>
@@ -106,6 +106,7 @@
       :submit-text="isEditing ? 'Salvar' : 'Criar'"
       @submit="saveUser"
       @cancel="handleCancelForm"
+      class="sm:max-w-xl fle gap-y-4"
     >
       <!-- Nome -->
       <Field name="name" v-slot="{ field, errorMessage }">
@@ -115,6 +116,7 @@
             id="name"
             v-bind="field"
             placeholder="Digite o nome completo"
+
             :class="{ 'border-red-500': errorMessage }"
           />
           <p v-if="errorMessage" class="text-xs text-red-600">
@@ -156,51 +158,57 @@
         </div>
       </Field>
 
-      <!-- Gender -->
-      <Field
-        name="gender"
-        v-slot="{ field, errorMessage, value, handleChange }"
-      >
-        <div class="space-y-2">
-          <Label for="gender">Gênero</Label>
-          <Select :value="value" @update:modelValue="handleChange">
-            <SelectTrigger :class="{ 'border-red-500': errorMessage }">
-              <SelectValue placeholder="Selecione um gênero" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="masculino">Masculino</SelectItem>
-              <SelectItem value="feminino">Feminino</SelectItem>
-              <SelectItem value="outro">Outro</SelectItem>
-            </SelectContent>
-          </Select>
-          <p v-if="errorMessage" class="text-xs text-red-600">
-            {{ errorMessage }}
-          </p>
-        </div>
-      </Field>
+      <!-- Gender and Role fields - Side-by-side -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <!-- Gender -->
+        <Field
+          name="gender"
+          v-slot="{ field, errorMessage, value, handleChange }"
+        >
+          <div class="space-y-2">
+            <Label for="gender">Gênero</Label>
+            <Select :value="value" @update:modelValue="handleChange">
+              <SelectTrigger :class="{ 'border-red-500': errorMessage }">
+                <SelectValue placeholder="Selecione um gênero" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="masculino">Masculino</SelectItem>
+                <SelectItem value="feminino">Feminino</SelectItem>
+                <SelectItem value="outro">Outro</SelectItem>
+              </SelectContent>
+            </Select>
+            <p v-if="errorMessage" class="text-xs text-red-600">
+              {{ errorMessage }}
+            </p>
+          </div>
+        </Field>
 
-      <!-- Role -->
-      <Field name="role" v-slot="{ field, errorMessage, value, handleChange }">
-        <div class="space-y-2">
-          <Label for="role">Tipo de Usuário</Label>
-          <Select :value="value" @update:modelValue="handleChange">
-            <SelectTrigger :class="{ 'border-red-500': errorMessage }">
-              <SelectValue placeholder="Selecione um tipo" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="admin">Administrador</SelectItem>
-              <SelectItem value="moderator">Moderador</SelectItem>
-              <SelectItem value="user">Usuário</SelectItem>
-            </SelectContent>
-          </Select>
-          <p v-if="errorMessage" class="text-xs text-red-600">
-            {{ errorMessage }}
-          </p>
-        </div>
-      </Field>
+        <!-- Role -->
+        <Field
+          name="role"
+          v-slot="{ field, errorMessage, value, handleChange }"
+        >
+          <div class="space-y-2">
+            <Label for="role">Tipo de Usuário</Label>
+            <Select :value="value" @update:modelValue="handleChange">
+              <SelectTrigger :class="{ 'border-red-500': errorMessage }">
+                <SelectValue placeholder="Selecione um tipo" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="admin">Administrador</SelectItem>
+                <SelectItem value="moderator">Moderador</SelectItem>
+                <SelectItem value="user">Usuário</SelectItem>
+              </SelectContent>
+            </Select>
+            <p v-if="errorMessage" class="text-xs text-red-600">
+              {{ errorMessage }}
+            </p>
+          </div>
+        </Field>
+      </div>
 
-      <!-- Password fields only for new users -->
-      <div v-if="!isEditing">
+      <!-- Password fields only for new users - Side-by-side -->
+      <div v-if="!isEditing" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <Field name="password" v-slot="{ field, errorMessage }">
           <div class="space-y-2">
             <Label for="password">Senha</Label>
@@ -233,6 +241,28 @@
           </div>
         </Field>
       </div>
+
+      <div class="mt-6">
+        <Field name="is_active" v-slot="{ field, errorMessage }">
+          <div class="flex items-center justify-between space-y-2">
+            <div>
+              <Label for="is_active">Status</Label>
+              <p class="text-sm text-muted-foreground">
+                Definir o usuário como ativo ou inativo
+              </p>
+            </div>
+            <Switch
+              id="is_active"
+              :checked="field.value"
+              @update:checked="field.onChange"
+              :class="{ 'border-red-500': errorMessage }"
+            />
+          </div>
+          <p v-if="errorMessage" class="text-xs text-red-600">
+            {{ errorMessage }}
+          </p>
+        </Field>
+      </div>
     </FormDialog>
 
     <!-- Delete Confirmation Dialog -->
@@ -246,17 +276,17 @@
       @confirm="deleteUser"
     />
 
-    <!-- Block/Unblock Confirmation Dialog -->
+    <!-- Active/Inactive Confirmation Dialog -->
     <ConfirmDialog
-      v-model="showBlockModal"
+      v-model="showActiveModal"
       :title="
-        blockAction === 'block' ? 'Bloquear Usuário' : 'Desbloquear Usuário'
+        activeAction === 'active' ? 'Desactivar Usuário' : 'Activar Usuário'
       "
-      :description="getBlockDescription()"
-      :confirm-text="blockAction === 'block' ? 'Bloquear' : 'Desbloquear'"
-      :confirm-variant="blockAction === 'block' ? 'destructive' : 'default'"
+      :description="getActiveDescription()"
+      :confirm-text="activeAction === 'active' ? 'Desactivar' : 'Activar'"
+      :confirm-variant="activeAction === 'active' ? 'destructive' : 'default'"
       :loading="isSubmitting"
-      @confirm="toggleUserBlock"
+      @confirm="toggleUserActive"
     />
   </div>
 </template>
@@ -271,6 +301,7 @@ import { Button } from "@/ui/components/button";
 import { Input } from "@/ui/components/input";
 import { Label } from "@/ui/components/label";
 import { Badge } from "@/ui/components/badge";
+import { Switch } from "@/ui/components/switch";
 import {
   Select,
   SelectContent,
@@ -289,6 +320,7 @@ import FormDialog from "@/admin/components/common/FormDialog.vue";
 import ConfirmDialog from "@/admin/components/common/ConfirmDialog.vue";
 import ActionButtons from "@/admin/components/common/ActionButtons.vue";
 import StatusBadge from "@/admin/components/common/StatusBadge.vue";
+
 import { useDateFormat } from "@/composables/useDateFormat";
 
 import { IUser } from "@/admin/types/IUser";
@@ -303,7 +335,7 @@ const columns = [
   { key: "email", label: "Email" },
   { key: "role", label: "Tipo" },
   { key: "phone", label: "Telefone" },
-  { key: "status", label: "Status" },
+  { key: "is_active", label: "Status" },
   { key: "created_at", label: "Criado em", format: "date" },
   { key: "updated_at", label: "Actualizado em", format: "date" },
   { key: "actions", label: "Ações", class: "text-right" },
@@ -316,14 +348,14 @@ const loading = ref<boolean>(true);
 const error = ref<string | null>(null);
 const showModal = ref<boolean>(false);
 const showDeleteModal = ref<boolean>(false);
-const showBlockModal = ref<boolean>(false);
+const showActiveModal = ref<boolean>(false);
 const isEditing = ref<boolean>(false);
 const isSubmitting = ref<boolean>(false);
 const userToEdit = ref<IUser | null>(null);
 const userToDelete = ref<IUser | null>(null);
-const userToBlock = ref<IUser | null>(null);
+const userToActive = ref<IUser | null>(null);
 const forceDelete = ref<boolean>(false);
-const blockAction = ref<"block" | "unblock">("block");
+const activeAction = ref<"active" | "inactive">("active");
 const roleFilter = ref<string>("all");
 
 // Validação do formulário
@@ -346,6 +378,7 @@ const userSchema = toFormValidator(
       role: z.enum(["admin", "moderator", "user"], {
         required_error: "O tipo de usuário é obrigatório",
       }),
+      is_active: z.boolean().default(true),
       password: z
         .string()
         .min(8, "A senha deve ter pelo menos 8 caracteres")
@@ -377,6 +410,7 @@ const formValues = computed(() => {
       phone: userToEdit.value.phone || "",
       gender: userToEdit.value.gender,
       role: userToEdit.value.role,
+      is_active: !userToEdit.value.is_active,
     };
   }
   return {
@@ -430,43 +464,29 @@ const openCreateModal = () => {
   showModal.value = true;
 };
 
-const resetFormWithValues = () => {
-  // Force a form update after modal opens
-  setTimeout(() => {
-    if (showModal.value && userToEdit.value) {
-      // Use DOM to reset input values
-      const nameInput = document.getElementById("name");
-      const emailInput = document.getElementById("email");
-      const phoneInput = document.getElementById("phone");
-      // Gender and role are handled by Select components which manage their state differently
+import { useForm } from "vee-validate";
 
-      if (nameInput) {
-        (nameInput as HTMLInputElement).value = userToEdit.value.name;
-        const event = new Event("input", { bubbles: true });
-        nameInput.dispatchEvent(event);
-      }
-
-      if (emailInput) {
-        (emailInput as HTMLInputElement).value = userToEdit.value.email;
-        const event = new Event("input", { bubbles: true });
-        emailInput.dispatchEvent(event);
-      }
-
-      if (phoneInput) {
-        (phoneInput as HTMLInputElement).value = userToEdit.value.phone || "";
-        const event = new Event("input", { bubbles: true });
-        phoneInput.dispatchEvent(event);
-      }
-    }
-  }, 100);
-};
+const { resetForm } = useForm();
 
 const openEditModal = (user: IUser) => {
   isEditing.value = true;
   userToEdit.value = user;
-  formKey.value++;
+
+  formKey.value++; // para forçar recriação do FormDialog
+
   showModal.value = true;
-  resetFormWithValues();
+
+  setTimeout(() => {
+    resetForm({
+      values: {
+        name: user.name,
+        email: user.email,
+        phone: user.phone || "",
+        gender: user.gender,
+        role: user.role,
+      },
+    });
+  }, 100);
 };
 
 const handleCancelForm = () => {
@@ -599,43 +619,43 @@ const restoreUser = async (user: IUser) => {
   }
 };
 
-// Block/Unblock user functionality
-const confirmBlockUser = (user: IUser) => {
-  userToBlock.value = user;
-  blockAction.value = "block";
-  showBlockModal.value = true;
+// Active/Inactive user functionality
+const confirmActiveUser = (user: IUser) => {
+  userToActive.value = user;
+  activeAction.value = "active";
+  showActiveModal.value = true;
 };
 
-const confirmUnblockUser = (user: IUser) => {
-  userToBlock.value = user;
-  blockAction.value = "unblock";
-  showBlockModal.value = true;
+const confirmInactiveUser = (user: IUser) => {
+  userToActive.value = user;
+  activeAction.value = "inactive";
+  showActiveModal.value = true;
 };
 
-const getBlockDescription = () => {
-  if (!userToBlock.value) return "";
+const getActiveDescription = () => {
+  if (!userToActive.value) return "";
 
-  if (blockAction.value === "block") {
-    return `Tem certeza que deseja bloquear o usuário "${userToBlock.value.name}"? Usuários bloqueados não poderão acessar o sistema.`;
+  if (activeAction.value === "active") {
+    return `Tem certeza que deseja desactivar o usuário "${userToActive.value.name}"? Usuários inactivos não poderão acessar o sistema.`;
   } else {
-    return `Tem certeza que deseja desbloquear o usuário "${userToBlock.value.name}"? O usuário poderá acessar o sistema novamente.`;
+    return `Tem certeza que deseja activar o usuário "${userToActive.value.name}"? O usuário poderá acessar o sistema novamente.`;
   }
 };
 
-const toggleUserBlock = async () => {
-  if (!userToBlock.value) return;
+const toggleUserActive = async () => {
+  if (!userToActive.value) return;
 
   try {
     isSubmitting.value = true;
 
-    if (blockAction.value === "block") {
-      await userService.block(userToBlock.value.id);
+    if (activeAction.value === "active") {
+      await userService.active(userToActive.value.id);
       toast({
         title: "Sucesso",
         description: "Usuário bloqueado com sucesso",
       });
     } else {
-      await userService.unblock(userToBlock.value.id);
+      await userService.inactive(userToActive.value.id);
       toast({
         title: "Sucesso",
         description: "Usuário desbloqueado com sucesso",
@@ -646,16 +666,16 @@ const toggleUserBlock = async () => {
     await fetchUsers();
 
     // Close the confirmation modal
-    showBlockModal.value = false;
-    userToBlock.value = null;
+    showActiveModal.value = false;
+    userToActive.value = null;
   } catch (err: any) {
-    console.error("Error toggling user block status:", err);
+    console.error("Error toggling user active status:", err);
     toast({
       title: "Erro",
       description:
         err.response?.data?.message ||
         `Erro ao ${
-          blockAction.value === "block" ? "bloquear" : "desbloquear"
+          activeAction.value === "active" ? "bloquear" : "desbloquear"
         } usuário`,
       variant: "destructive",
     });
@@ -678,7 +698,9 @@ const formatDate = (dateString: string): string => {
   }
 };
 
-const getRoleBadgeVariant = (role: string): string => {
+const getRoleBadgeVariant = (
+  role: string
+): "default" | "secondary" | "destructive" | "outline" | null | undefined => {
   switch (role) {
     case "admin":
       return "destructive";

@@ -34,10 +34,7 @@ class UserModel extends Authenticatable
         'role',
         'slug',
         'password',
-        'is_blocked',
-        'is_login',
-        'is_tour',
-        'is_changed_password_once',
+        'is_active',
     ];
 
     /**
@@ -58,14 +55,10 @@ class UserModel extends Authenticatable
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'gender' => GenderEnum::class,
             'role' => RoleEnum::class,
             'is_blocked' => 'boolean',
-            'is_login' => 'boolean',
-            'is_tour' => 'boolean',
-            'is_changed_password_once' => 'boolean',
         ];
     }
 

@@ -8,6 +8,6 @@ export const userService = {
   delete: (id: number) => api.delete(`/users/${id}`),
   forceDelete: (id: number) => api.delete(`/users/force-delete/${id}`),
   restore: (id: number) => api.put(`/users/restore/${id}`),
-  block: (id: number) => api.put(`/users/block/${id}`),
-  unblock: (id: number) => api.put(`/users/unblock/${id}`),
+  active: (id: number) => api.put(`/users/active/${id}`, { value: true }),
+  inactive: (id: number) => api.put(`/users/active/${id}`, { value: false }),
 };
