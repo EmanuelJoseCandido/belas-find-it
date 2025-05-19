@@ -64,9 +64,12 @@
         {{ item.phone || "—" }}
       </template>
 
-      <!-- Created At column -->
       <template #created_at="{ item }">
-        {{ formatDate(item.created_at) }}
+        {{ timeAgo(item.created_at) }}
+      </template>
+
+      <template #updated_at="{ item }">
+        {{ timeAgo(item.updated_at) }}
       </template>
 
       <!-- Actions column -->
@@ -286,23 +289,12 @@ import FormDialog from "@/admin/components/common/FormDialog.vue";
 import ConfirmDialog from "@/admin/components/common/ConfirmDialog.vue";
 import ActionButtons from "@/admin/components/common/ActionButtons.vue";
 import StatusBadge from "@/admin/components/common/StatusBadge.vue";
+import { useDateFormat } from "@/composables/useDateFormat";
 
-// Interface do Usuário
-interface IUser {
-  id: number;
-  name: string;
-  email: string;
-  phone?: string;
-  gender: string;
-  role: string;
-  is_blocked: boolean;
-  deleted_at: string | null;
-  created_at: string;
-  updated_at: string;
-}
-
+import { IUser } from "@/admin/types/IUser";
 // Auth Store
 const authStore = useAuthStore();
+const { timeAgo } = useDateFormat();
 
 // Definição das colunas
 const columns = [
@@ -312,7 +304,8 @@ const columns = [
   { key: "role", label: "Tipo" },
   { key: "phone", label: "Telefone" },
   { key: "status", label: "Status" },
-  { key: "created_at", label: "Criado em" },
+  { key: "created_at", label: "Criado em", format: "date" },
+  { key: "updated_at", label: "Actualizado em", format: "date" },
   { key: "actions", label: "Ações", class: "text-right" },
 ];
 

@@ -34,7 +34,7 @@
       </template>
 
       <template #updated_at="{ item }">
-        {{ timeAgo(item.created_at) }}
+        {{ timeAgo(item.updated_at) }}
       </template>
 
       <!-- Slot para coluna de ações -->
@@ -124,8 +124,8 @@ const columns = [
   { key: "name", label: "Nome" },
   { key: "status", label: "Status" },
   { key: "items_count", label: "Qtd. Itens" },
-  { key: "created_at", label: "Criado", format: "date" },
-  { key: "updated_at", label: "Actualizado", format: "date" },
+  { key: "created_at", label: "Criado em", format: "date" },
+  { key: "updated_at", label: "Actualizado em", format: "date" },
   { key: "actions", label: "Ações", class: "text-right" },
 ];
 
