@@ -49,8 +49,8 @@ class ItemService
      */
     public function get(int $id)
     {
-       /*  if (!$this->verifyAdmin())
-            throw new UnauthorizedException(); */
+        /*  if (!$this->verifyAdmin())
+             throw new UnauthorizedException(); */
         return ItemModel::withTrashed()->with($this->relations)->findOrFail($id);
     }
 
@@ -98,6 +98,11 @@ class ItemService
     public function forceDelete(int $id)
     {
         $item = $this->get($id);
+
+        if ($item->image) {
+            $this->destroyFile($item->image);
+        }
+
         return $item->forceDelete();
     }
 

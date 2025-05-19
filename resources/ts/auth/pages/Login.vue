@@ -15,7 +15,7 @@
       <div class="space-y-3">
         <div class="flex gap-4">
           <Button type="button" @click="authStore.logout()">Logout</Button>
-          <Button type="button" @click="claimService.getAll()">GetAll</Button>
+          <Button type="button" @click="userService.getAll()">GetAll</Button>
         </div>
 
         <Field name="identifier" v-slot="{ field, errorMessage }">
@@ -113,7 +113,7 @@ import { useAuthStore } from "@/auth/stores/authStore";
 import { toast } from "@/ui/components/toast";
 import { useRouter } from "vue-router";
 import type { ILoginCredentials, TTypeLogin } from "@/auth/types/UserInterface";
-import { claimService } from "@/services/claimService";
+import { userService } from "@/services/userService";
 
 const authStore = useAuthStore();
 const router = useRouter();

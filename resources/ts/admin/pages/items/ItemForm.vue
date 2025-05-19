@@ -603,6 +603,8 @@ const saveItem = async (values: Record<string, any>) => {
       formData.append("image", imageFile.value);
     }
 
+    console.log("formData: ", formData);
+
     let response;
     if (isEditing.value && item.value) {
       // Update existing item

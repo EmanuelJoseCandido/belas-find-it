@@ -44,7 +44,7 @@ class ClaimModel extends Model
 
     public function item()
     {
-        return $this->belongsTo(ItemModel::class);
+        return $this->belongsTo(ItemModel::class, 'item_id');
     }
 
     public function user()

@@ -1,12 +1,9 @@
 <?php
-
 namespace App\Traits\Essentials;
-
 use Illuminate\Support\Facades\Storage;
 
 trait FileTrait
 {
-
     /**
      * Cria um arquivo em um directório especifico.
      *
@@ -18,11 +15,14 @@ trait FileTrait
     {
         if (($file->isValid())) {
             $ficheiro = date('YmdHis') . $key . '.' . $file->getClientOriginalExtension();
-            $newPath = config('app.api') . "/storage/" . $file->storeAs("public/$path", $ficheiro);
-            return str_replace("public/", "", $newPath);
-        }
 
-        return;
+            // Armazenar no disco 'public'
+            $storagePath = $file->storeAs($path, $ficheiro, 'public');
+
+            // Retorna a URL pública completa
+            return asset('storage/' . $storagePath);
+        }
+        return null;
     }
 
     /**
@@ -47,25 +47,25 @@ trait FileTrait
      */
     public function destroyFile(string $file): bool
     {
-        $file = str_replace(config('app.api') . "/storage", "public", $file);
+        // Extrair o caminho relativo da URL completa
+        $url = parse_url($file, PHP_URL_PATH);
+        $relativePath = str_replace('/storage/', '', $url);
 
-        if (Storage::exists($file)) {
-            return Storage::delete($file);
+        if (Storage::disk('public')->exists($relativePath)) {
+            return Storage::disk('public')->delete($relativePath);
         }
-
         return false;
     }
 
     /**
      * Remove uma directorio especifico.
      *
-     * @param object $file
-     * @return bool
+     * @param string $path
      */
-    public function destroyPath(string $path): bool
+    public function destroyPath(string $path)
     {
-        if (Storage::exists($path)) {
-            return Storage::deleteDirectory($path);
+        if (Storage::disk('public')->exists($path)) {
+            return Storage::disk('public')->deleteDirectory($path);
         }
     }
 }

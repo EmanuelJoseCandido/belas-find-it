@@ -8,18 +8,8 @@ enum FilePathsEnum: string
 {
     //:something is change dynamic
 
-    /**
-     * Images, pictures
-     */
-    case PROFILE = "private/employee/pics";
-    case CONSTRUCTION = "construction/:id/";
-    case STORE = "private/products/store";
-    case STORAGE = "private/products/storage";
     case ITEM_SERVICE = "item_service";
     case STORAGE_PRODUCTS = "storage/products/:product_slug/";
-
-
-
 
     /**
      * Get privilege value by name

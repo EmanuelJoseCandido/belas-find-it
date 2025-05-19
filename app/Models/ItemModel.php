@@ -59,6 +59,6 @@ class ItemModel extends Model
 
     public function claims()
     {
-        return $this->hasMany(ClaimModel::class);
+        return $this->hasMany(ClaimModel::class, 'id');
     }
 }
