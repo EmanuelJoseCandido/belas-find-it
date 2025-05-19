@@ -31,8 +31,8 @@ Route::middleware('auth:sanctum')->group(function () {
      */
     Route::apiResource('users', UserController::class);
     Route::prefix('users')->controller(UserController::class)->group(function () {
-        Route::put('restore/{category}', 'restore');
-        Route::delete('force-delete/{category}', 'forceDelete');
+        Route::put('restore/{user}', 'restore');
+        Route::delete('force-delete/{user}', 'forceDelete');
     });
 
     /**

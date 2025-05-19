@@ -31,14 +31,14 @@ class UserController extends Controller
     /**
      * Store a newly created occurrence record resource in the database.
      *
-     * @param  UserRequest $claimRequest
+     * @param  UserRequest $userRequest
      * @return UserResource
      */
-    public function store(UserRequest $claimRequest): UserResource
+    public function store(UserRequest $userRequest): UserResource
     {
-        $claim = $claimRequest->validated();
-        $claim = $this->userService->create($claim);
-        return new UserResource($claim);
+        $user = $userRequest->validated();
+        $user = $this->userService->create($user);
+        return new UserResource($user);
     }
 
     /**
@@ -49,22 +49,22 @@ class UserController extends Controller
      */
     public function show(int $identify): UserResource|null
     {
-        $claim = $this->userService->get($identify);
-        return is_null($claim) ? null : new UserResource($claim);
+        $user = $this->userService->get($identify);
+        return is_null($user) ? null : new UserResource($user);
     }
 
     /**
      * Update a newly created occurrence record resource in the database.
      *
-     * @param  UserRequest $claimRequest
+     * @param  UserRequest $userRequest
      * @param  int $id
      * @return UserResource
      */
-    public function update(UserRequest $claimRequest, int $id): UserResource
+    public function update(UserRequest $userRequest, int $id): UserResource
     {
-        $claim = $claimRequest->validated();
-        $claim = $this->userService->update($claim, $id);
-        return new UserResource($claim);
+        $user = $userRequest->validated();
+        $user = $this->userService->update($user, $id);
+        return new UserResource($user);
     }
 
     /**

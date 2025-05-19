@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Auth;
 
 use App\Enums\Users\GenderEnum;
+use App\Enums\Users\RoleEnum;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Enum;
 
@@ -23,15 +24,15 @@ class UserRequest extends FormRequest
      */
     public function rules(): array
     {
-        $id = request()->input('id');
+        $id = $this->route('user');
 
         return [
             'name' => 'required',
-            'email' => 'required|email|string|unique:users,email',
+            'email' => 'required|email|string|unique:users,email,' . $id,
             'phone' => 'required',
             'gender' => ['required', 'string', new Enum(GenderEnum::class)],
-            'password' => 'required|string|max:30|min:8|regex:/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).+$/|confirmed',
-            'password_confirmation' => 'required',
+            'role' => ['required', 'string', new Enum(RoleEnum::class)],
         ];
     }
+
 }
