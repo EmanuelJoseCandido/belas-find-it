@@ -25,7 +25,7 @@ class RegisterRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'email' => 'required|email',
+            'email' => 'required|email|string|unique:users,email',
             'phone' => 'required',
             'gender' => ['required', 'string', new Enum(GenderEnum::class)],
             'password' => 'required|string|max:30|min:8|regex:/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).+$/|confirmed',

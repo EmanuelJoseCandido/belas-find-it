@@ -23,8 +23,15 @@ class UserRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
+        $id = request()->input('id');
 
+        return [
+            'name' => 'required',
+            'email' => 'required|email|string|unique:users,email',
+            'phone' => 'required',
+            'gender' => ['required', 'string', new Enum(GenderEnum::class)],
+            'password' => 'required|string|max:30|min:8|regex:/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).+$/|confirmed',
+            'password_confirmation' => 'required',
         ];
     }
 }
