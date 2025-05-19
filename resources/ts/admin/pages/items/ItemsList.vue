@@ -159,6 +159,10 @@
         <span v-else class="text-muted-foreground">0</span>
       </template>
 
+      <template #created_at="{ item }">
+        {{ timeAgo(item.created_at) }}
+      </template>
+
       <!-- Slot para coluna de ações -->
       <template #actions="{ item }">
         <ActionButtons
@@ -209,6 +213,7 @@ import {
 
 import { itemService } from "@/services/itemService";
 import { categoryService } from "@/services/categoryService";
+import { useDateFormat } from "@/composables/useDateFormat";
 
 // Componentes reutilizáveis
 import DataTable from "@/admin/components/common/DataTable.vue";
@@ -220,6 +225,7 @@ import { ICategory } from "@/admin/types/ICategory";
 
 // Router
 const router = useRouter();
+const { formatDate, timeAgo } = useDateFormat();
 
 // Definição das colunas
 const columns = [
@@ -229,7 +235,7 @@ const columns = [
   { key: "category", label: "Categoria" },
   { key: "user", label: "Usuário" },
   { key: "created_at", label: "Data", format: "date" },
-  { key: "claims_count", label: "Reivindicações", class: "text-center" },
+  { key: "claims_count", label: "Reclamações", class: "text-center" },
   { key: "actions", label: "Ações", class: "text-right" },
 ];
 
@@ -274,7 +280,7 @@ const filteredItems = computed(() => {
   // Filtro de categoria
   if (filters.value.category !== "all") {
     filtered = filtered.filter(
-      (item) => item.category_id.toString() === filters.value.category
+      (item) => item?.category_id?.toString() === filters.value.category
     );
   }
 
@@ -405,6 +411,7 @@ const getUserInitials = (name?: string) => {
 
 const getImageUrl = (imagePath: string) => {
   // Verificar se a URL já é completa
+  console.log("imagePath: ", imagePath);
   if (imagePath.startsWith("http")) {
     return imagePath;
   }
