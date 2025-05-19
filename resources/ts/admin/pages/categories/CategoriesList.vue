@@ -29,6 +29,14 @@
         {{ item.items?.length || 0 }}
       </template>
 
+      <template #created_at="{ item }">
+        {{ timeAgo(item.created_at) }}
+      </template>
+
+      <template #updated_at="{ item }">
+        {{ timeAgo(item.created_at) }}
+      </template>
+
       <!-- Slot para coluna de ações -->
       <template #actions="{ item }">
         <ActionButtons
@@ -99,6 +107,7 @@ import { Label } from "@/ui/components/label";
 import { Plus as PlusIcon, Folder as FolderIcon } from "lucide-vue-next";
 
 import { categoryService } from "@/services/categoryService";
+import { useDateFormat } from "@/composables/useDateFormat";
 
 // Componentes reutilizáveis
 import DataTable from "@/admin/components/common/DataTable.vue";
@@ -115,8 +124,12 @@ const columns = [
   { key: "name", label: "Nome" },
   { key: "status", label: "Status" },
   { key: "items_count", label: "Qtd. Itens" },
+  { key: "created_at", label: "Criado", format: "date" },
+  { key: "updated_at", label: "Actualizado", format: "date" },
   { key: "actions", label: "Ações", class: "text-right" },
 ];
+
+const { timeAgo } = useDateFormat();
 
 const formKey = ref(0);
 const categories = ref<ICategory[]>([]);

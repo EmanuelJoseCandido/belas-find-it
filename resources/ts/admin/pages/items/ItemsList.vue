@@ -225,7 +225,7 @@ import { ICategory } from "@/admin/types/ICategory";
 
 // Router
 const router = useRouter();
-const { formatDate, timeAgo } = useDateFormat();
+const { timeAgo } = useDateFormat();
 
 // Definição das colunas
 const columns = [
