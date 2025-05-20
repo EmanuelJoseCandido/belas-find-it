@@ -16,7 +16,11 @@
             @submit="handleSubmit"
             :validation-schema="itemSchema"
             :initial-values="initialValues"
-            v-slot="{ errors: formErrors, isSubmitting: formSubmitting }"
+            v-slot="{
+              errors: formErrors,
+              isSubmitting: formSubmitting,
+              resetForm: formResetFunction,
+            }"
             class="space-y-6"
           >
             <!-- Tipo de Item -->
@@ -625,7 +629,10 @@ const clearImage = (): void => {
   }
 };
 
-const handleSubmit = async (values: Record<string, any>): Promise<void> => {
+const handleSubmit = async (
+  values: Record<string, any>,
+  { resetForm: formResetFunction }: any
+): Promise<void> => {
   try {
     isSubmitting.value = true;
 
@@ -642,8 +649,6 @@ const handleSubmit = async (values: Record<string, any>): Promise<void> => {
       formData.append("image", uploadedFile.value);
     }
 
-    console.log("formData: ", formData);
-
     const response = await itemService.create(formData);
     createdItemId.value = response.data.id;
 
@@ -655,6 +660,17 @@ const handleSubmit = async (values: Record<string, any>): Promise<void> => {
 
     // Mostrar modal de sucesso
     showSuccessModal.value = true;
+
+    // Limpar formulário
+    formResetFunction();
+
+    // Limpar outras variáveis de estado
+    previewImage.value = "";
+    uploadedFile.value = null;
+    imageError.value = "";
+
+    // Voltar para o tipo padrão
+    status.value = "perdido";
   } catch (error) {
     console.error("Erro ao cadastrar item:", error);
 
