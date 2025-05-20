@@ -27,7 +27,7 @@
                 <div
                   class="border rounded-lg p-4 cursor-pointer transition-colors"
                   :class="
-                    itemType === 'perdido'
+                    status === 'perdido'
                       ? 'bg-primary/10 border-primary'
                       : 'hover:bg-muted'
                   "
@@ -37,7 +37,7 @@
                     <HelpCircleIcon
                       class="h-8 w-8"
                       :class="
-                        itemType === 'perdido'
+                        status === 'perdido'
                           ? 'text-primary'
                           : 'text-muted-foreground'
                       "
@@ -52,7 +52,7 @@
                 <div
                   class="border rounded-lg p-4 cursor-pointer transition-colors"
                   :class="
-                    itemType === 'achado'
+                    status === 'achado'
                       ? 'bg-primary/10 border-primary'
                       : 'hover:bg-muted'
                   "
@@ -62,7 +62,7 @@
                     <SearchIcon
                       class="h-8 w-8"
                       :class="
-                        itemType === 'achado'
+                        status === 'achado'
                           ? 'text-primary'
                           : 'text-muted-foreground'
                       "
@@ -75,8 +75,8 @@
                 </div>
               </div>
 
-              <!-- Campo oculto para o itemType -->
-              <Field name="itemType" v-slot="{ field, errorMessage }">
+              <!-- Campo oculto para o status -->
+              <Field name="status" v-slot="{ field, errorMessage }">
                 <input v-bind="field" type="hidden" />
                 <p v-if="errorMessage" class="mt-1 text-sm text-red-600">
                   {{ errorMessage }}
@@ -194,7 +194,7 @@
                     />
                     <p class="text-xs text-muted-foreground mt-1">
                       Data em que o item foi
-                      {{ itemType === "perdido" ? "perdido" : "encontrado" }}
+                      {{ status === "perdido" ? "perdido" : "encontrado" }}
                     </p>
                     <p v-if="errorMessage" class="mt-1 text-sm text-red-600">
                       {{ errorMessage }}
@@ -276,83 +276,6 @@
                   Uma imagem clara do item ajuda na identificação. Não inclua
                   informações pessoais visíveis.
                 </p>
-              </div>
-            </div>
-
-            <!-- Informações de Contato -->
-            <div class="p-6 bg-white rounded-lg shadow-sm border">
-              <h2 class="text-xl font-semibold mb-4">Informações de Contato</h2>
-
-              <div v-if="!isAuthenticated" class="mb-4 p-4 bg-muted rounded-lg">
-                <div class="flex items-start gap-3">
-                  <InfoIcon class="h-5 w-5 text-primary mt-0.5" />
-                  <div>
-                    <p class="font-medium">
-                      Faça login para facilitar o cadastro
-                    </p>
-                    <p class="text-sm text-muted-foreground">
-                      Ao fazer login, suas informações de contato serão
-                      preenchidas automaticamente e você poderá gerenciar seus
-                      itens.
-                    </p>
-                    <div class="mt-2">
-                      <RouterLink to="/auth/login">
-                        <Button variant="outline" size="sm">Fazer Login</Button>
-                      </RouterLink>
-                      <RouterLink to="/auth/register" class="ml-2">
-                        <Button size="sm">Cadastrar-se</Button>
-                      </RouterLink>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="space-y-4">
-                <Field name="name" v-slot="{ field, errorMessage }">
-                  <div>
-                    <Label for="name">Nome Completo</Label>
-                    <Input
-                      id="name"
-                      v-bind="field"
-                      placeholder="Seu nome completo"
-                      :class="{ 'border-red-500': errorMessage }"
-                    />
-                    <p v-if="errorMessage" class="mt-1 text-sm text-red-600">
-                      {{ errorMessage }}
-                    </p>
-                  </div>
-                </Field>
-
-                <Field name="email" v-slot="{ field, errorMessage }">
-                  <div>
-                    <Label for="email">E-mail</Label>
-                    <Input
-                      id="email"
-                      v-bind="field"
-                      type="email"
-                      placeholder="seu@email.com"
-                      :class="{ 'border-red-500': errorMessage }"
-                    />
-                    <p v-if="errorMessage" class="mt-1 text-sm text-red-600">
-                      {{ errorMessage }}
-                    </p>
-                  </div>
-                </Field>
-
-                <Field name="phone" v-slot="{ field, errorMessage }">
-                  <div>
-                    <Label for="phone">Telefone</Label>
-                    <Input
-                      id="phone"
-                      v-bind="field"
-                      placeholder="(00) 00000-0000"
-                      :class="{ 'border-red-500': errorMessage }"
-                    />
-                    <p v-if="errorMessage" class="mt-1 text-sm text-red-600">
-                      {{ errorMessage }}
-                    </p>
-                  </div>
-                </Field>
               </div>
             </div>
 
@@ -482,7 +405,7 @@
           <p class="text-center mb-4">
             Agradecemos por utilizar nossa plataforma. Esperamos que seu item
             {{
-              itemType === "perdido"
+              status === "perdido"
                 ? "seja encontrado"
                 : "seja devolvido ao dono"
             }}
@@ -547,34 +470,16 @@ import {
   Check as CheckIcon,
   Loader2,
 } from "lucide-vue-next";
-
-// Definir interfaces para um código mais seguro
-interface Category {
-  id: number;
-  name: string;
-}
-
-type ItemType = "perdido" | "achado" | "resgatado";
-
-interface ItemFormData {
-  itemType: ItemType;
-  title: string;
-  description: string;
-  category: string;
-  location: string;
-  date: string;
-  image: File | null;
-  name: string;
-  email: string;
-  phone: string;
-}
+import type { ICategory } from "@/admin/types/ICategory";
+import type { TTemStatus } from "@/admin/types/IItem";
+import { categoryService } from "@/services/categoryService";
 
 // Router
 const router = useRouter();
 const authStore = useAuthStore();
 
 // Estado
-const itemType = ref<ItemType>("perdido");
+const status = ref<TTemStatus>("perdido");
 const isAuthenticated = computed(
   () => authStore.user?.isAuthenticated || false
 );
@@ -588,13 +493,7 @@ const createdItemId = ref<number | null>(null);
 const uploadedFile = ref<File | null>(null);
 
 // Categorias
-const categories = ref<Category[]>([
-  { id: 1, name: "Documentos" },
-  { id: 2, name: "Eletrônicos" },
-  { id: 3, name: "Acessórios" },
-  { id: 4, name: "Vestuário" },
-  { id: 5, name: "Outros" },
-]);
+const categories = ref<ICategory[]>([]);
 
 // Computed
 const today = computed(() => {
@@ -603,23 +502,24 @@ const today = computed(() => {
 });
 
 // Valores iniciais do formulário
-const initialValues = {
-  itemType: itemType.value,
+const initialValues = computed(() => ({
+  status: status.value,
+  userId: authStore.user?.id,
   title: "",
   description: "",
   category: "",
   location: "",
   date: "",
   image: null,
-  name: isAuthenticated.value ? authStore.user?.name || "" : "",
-  email: isAuthenticated.value ? authStore.user?.email || "" : "",
-  phone: isAuthenticated.value ? authStore.user?.phone || "" : "",
-};
+  name: authStore.user?.name || "",
+  email: authStore.user?.email || "",
+  phone: authStore.user?.phone || "",
+}));
 
 // Schema de validação com Zod
 const itemSchema = toFormValidator(
   z.object({
-    itemType: z.enum(["perdido", "achado", "resgatado"] as const, {
+    status: z.enum(["perdido", "achado", "resgatado"] as const, {
       required_error: "Selecione o tipo de item",
     }),
     title: z
@@ -656,8 +556,8 @@ const itemSchema = toFormValidator(
 const { resetForm } = useForm();
 
 // Atualizar tipo de item - enviar para o contexto do formulário
-const setItemType = (type: ItemType): void => {
-  itemType.value = type;
+const setItemType = (type: TTemStatus): void => {
+  status.value = type;
 };
 
 // Métodos para manipulação de imagem
@@ -674,6 +574,22 @@ const handleFileChange = (event: Event): void => {
 
   if (file) {
     validateAndProcessFile(file);
+  }
+};
+
+const fetchCategories = async () => {
+  try {
+    const response = await categoryService.getAll();
+    categories.value = response.data.data || response.data;
+  } catch (err: any) {
+    console.error("Error fetching categories:", err);
+
+    toast({
+      title: "Erro",
+      description: "Não foi possível carregar as categorias",
+      variant: "destructive",
+    });
+  } finally {
   }
 };
 
@@ -725,13 +641,13 @@ const handleSubmit = async (values: Record<string, any>): Promise<void> => {
     // Preparar FormData para envio
     const formData = new FormData();
 
-    // Importante: mapear itemType para status
-    formData.append("status", values.itemType);
+    // Importante: mapear status para status
+    formData.append("status", values.status);
 
     // Adicionar todos os outros valores do formulário
     Object.entries(values).forEach(([key, value]) => {
-      // Não duplicar o itemType, já mapeado como 'status'
-      if (key !== "itemType" && value !== null && value !== undefined) {
+      // Não duplicar o status, já mapeado como 'status'
+      if (key !== "status" && value !== null && value !== undefined) {
         formData.append(key, value as string);
       }
     });
@@ -770,22 +686,30 @@ const handleSubmit = async (values: Record<string, any>): Promise<void> => {
 const goToItemPage = (): void => {
   showSuccessModal.value = false;
   if (createdItemId.value) {
-    router.push(`/${itemType.value}s/${createdItemId.value}`);
+    router.push(`/${status.value}s/${createdItemId.value}`);
   }
 };
 
 // Inicializar
-onMounted(() => {
-  // Carregar dados do usuário logado, se houver
-  if (isAuthenticated.value && authStore.user) {
-    resetForm({
-      values: {
-        ...initialValues,
-        name: authStore.user.name,
-        email: authStore.user.email,
-        phone: authStore.user.phone || "",
-      },
+onMounted(async () => {
+  // Redirect unauthenticated users to login page
+  if (!isAuthenticated.value) {
+    toast({
+      title: "Acesso restrito",
+      description: "É necessário fazer login para cadastrar itens.",
+      variant: "destructive",
     });
+
+    router.push({
+      name: "auth-login",
+      query: { redirect: router.currentRoute.value.fullPath },
+    });
+    return;
+  }
+
+  // Load authenticated user data
+  if (authStore.user) {
+    await fetchCategories();
   }
 });
 </script>

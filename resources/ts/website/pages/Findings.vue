@@ -127,11 +127,12 @@ import {
 } from "@/ui/components/select";
 import { FileSearchIcon, ChevronLeft, ChevronRight } from "lucide-vue-next";
 import { itemService } from "@/services/itemService";
+import type { IItem } from "@/admin/types/IItem";
 
 // Estado
 const route = useRoute();
 const router = useRouter();
-const items = ref<any[]>([]);
+const items = ref<IItem[]>([]);
 const isLoading = ref(true);
 const currentPage = ref(1);
 const totalPages = ref(1);

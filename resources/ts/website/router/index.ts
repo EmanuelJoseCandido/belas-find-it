@@ -35,6 +35,7 @@ export const websiteRoutes: Array<RouteRecordRaw> = [
   {
     path: "/cadastrar-item",
     name: "register-item",
+    meta: { requiresAuth: true },
     component: () => import("../pages/RegisterItem.vue"),
   },
   {
