@@ -504,21 +504,21 @@ const today = computed(() => {
 // Valores iniciais do formulário
 const initialValues = computed(() => ({
   status: status.value,
-  userId: authStore.user?.id,
+  user_id: authStore.user?.id,
   title: "",
   description: "",
   category: "",
   location: "",
   date: "",
   image: null,
-  name: authStore.user?.name || "",
-  email: authStore.user?.email || "",
-  phone: authStore.user?.phone || "",
 }));
 
 // Schema de validação com Zod
 const itemSchema = toFormValidator(
   z.object({
+    user_id: z.number({
+      required_error: "ID do usuário é obrigatório",
+    }),
     status: z.enum(["perdido", "achado", "resgatado"] as const, {
       required_error: "Selecione o tipo de item",
     }),
@@ -540,15 +540,6 @@ const itemSchema = toFormValidator(
       .string({ required_error: "Campo obrigatório" })
       .refine((val) => !!val, "Selecione uma data"),
     image: z.any().optional(), // Validação manual da imagem
-    name: z
-      .string({ required_error: "Campo obrigatório" })
-      .min(3, "O nome deve ter pelo menos 3 caracteres"),
-    email: z
-      .string({ required_error: "Campo obrigatório" })
-      .email("Insira um email válido"),
-    phone: z
-      .string({ required_error: "Campo obrigatório" })
-      .min(9, "O telefone deve ter pelo menos 9 dígitos"),
   })
 );
 
@@ -641,13 +632,8 @@ const handleSubmit = async (values: Record<string, any>): Promise<void> => {
     // Preparar FormData para envio
     const formData = new FormData();
 
-    // Importante: mapear status para status
-    formData.append("status", values.status);
-
-    // Adicionar todos os outros valores do formulário
     Object.entries(values).forEach(([key, value]) => {
-      // Não duplicar o status, já mapeado como 'status'
-      if (key !== "status" && value !== null && value !== undefined) {
+      if (value !== null && value !== undefined) {
         formData.append(key, value as string);
       }
     });
@@ -692,7 +678,6 @@ const goToItemPage = (): void => {
 
 // Inicializar
 onMounted(async () => {
-  // Redirect unauthenticated users to login page
   if (!isAuthenticated.value) {
     toast({
       title: "Acesso restrito",
