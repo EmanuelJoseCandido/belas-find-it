@@ -132,7 +132,7 @@
         </div>
 
         <div class="text-center mt-12">
-          <RouterLink to="/cadastrar">
+          <RouterLink :to="{ name: 'register-item' }">
             <Button size="lg">Cadastrar um Item</Button>
           </RouterLink>
         </div>
@@ -262,10 +262,10 @@
           plataforma e aumente as chances de recuperação.
         </p>
         <div class="flex flex-wrap justify-center gap-4">
-          <RouterLink to="/cadastrar">
+          <RouterLink :to="{ name: 'register-item' }">
             <Button size="lg" variant="secondary">Cadastrar um Item</Button>
           </RouterLink>
-          <RouterLink to="/sobre">
+          <RouterLink :to="{ name: 'about' }">
             <Button
               size="lg"
               variant="outline"
@@ -350,7 +350,7 @@ const filteredItems = computed(() => {
     return recentItems.value;
   }
 
-  console.log("activeTab: ", activeTab.value)
+  console.log("activeTab: ", activeTab.value);
   return recentItems.value.filter((item) => item.status === activeTab.value);
 });
 
