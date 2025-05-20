@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ItemFilterRequest;
 use App\Http\Requests\ItemRequest;
 use App\Http\Resources\ItemResource;
 use App\Services\ItemService;
@@ -23,9 +24,10 @@ class ItemController extends Controller
      *
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function index(): \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+    public function index(ItemFilterRequest $itemFilterRequest): \Illuminate\Http\Resources\Json\AnonymousResourceCollection
     {
-        return ItemResource::collection($this->itemService->getAll());
+        $item = $itemFilterRequest->validated();
+        return ItemResource::collection($this->itemService->getAll($item));
     }
 
     /**

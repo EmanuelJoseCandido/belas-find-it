@@ -20,11 +20,49 @@ class ItemService
      *
      * @return \Illuminate\Database\Eloquent\Collection|static[]
      */
-    public function getAll()
+    /**
+     * Get all items from the database with filters
+     *
+     * @param array $filters
+     * @return \Illuminate\Database\Eloquent\Collection|static[]
+     */
+    public function getAll(array $filters = [])
     {
         /* if (!$this->verifyAdmin())
             throw new UnauthorizedException(); */
-        return ItemModel::withTrashed()->with($this->relations)->get();
+
+        $query = ItemModel::query()->with($this->relations);
+
+        // Apply status filter
+        if (isset($filters['status']) && !empty($filters['status'])) {
+            $query->where('status', $filters['status']);
+        }
+
+        // Apply search filter for title and description
+        if (isset($filters['search']) && !empty($filters['search'])) {
+            $query->where(function ($q) use ($filters) {
+                $q->where('title', 'like', '%' . $filters['search'] . '%')
+                    ->orWhere('description', 'like', '%' . $filters['search'] . '%');
+            });
+        }
+
+        // Apply category filter
+        if (isset($filters['category_id']) && !empty($filters['category_id'])) {
+            $query->where('category_id', $filters['category_id']);
+        }
+
+        // Apply location filter
+        if (isset($filters['location']) && !empty($filters['location'])) {
+            $query->where('location', 'like', '%' . $filters['location'] . '%');
+        }
+
+        // Apply date filter
+        if (isset($filters['date']) && !empty($filters['date'])) {
+            $query->whereDate('created_at', $filters['date']);
+        }
+
+        // You might want to add pagination here too
+        return $query->get();
     }
 
     /**

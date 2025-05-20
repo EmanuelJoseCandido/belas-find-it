@@ -2,10 +2,22 @@ import api from "./api";
 
 export const itemService = {
   getAll: (params?: any) => api.get("/items", { params }),
-  getLost: (params: any) =>
-    api.get("/items", { params: { ...params, status: "perdido" } }),
-  getFound: (params: any) =>
-    api.get("/items", { params: { ...params, status: "achado" } }),
+  getLost: (params: any = {}) =>
+    api.get("/items", {
+      params: {
+        ...params,
+        status: "perdido",
+        ...(params.keyword && !params.search && { search: params.keyword }),
+      },
+    }),
+  getFound: (params: any = {}) =>
+    api.get("/items", {
+      params: {
+        ...params,
+        status: "achado",
+        ...(params.keyword && !params.search && { search: params.keyword }),
+      },
+    }),
   get: (id: number) => api.get(`/items/${id}`),
   create: (itemData: FormData) =>
     api.post("/items", itemData, {
