@@ -368,8 +368,23 @@ const fetchRecentItems = async () => {
   }
 };
 
+const fetchStats = async () => {
+  try {
+    const { data } = await itemService.getCountsByStatus();
+
+    stats.value.totalItems = data.data.total;
+    stats.value.lostItems = data.data.perdido;
+    stats.value.foundItems = data.data.achado;
+    stats.value.recoveredItems = data.data.resgatado;
+  } catch (error) {
+    console.error("Erro ao buscar itens recentes:", error);
+  } finally {
+  }
+};
+
 // Inicializar
 onMounted(() => {
+  fetchStats();
   fetchRecentItems();
 });
 </script>

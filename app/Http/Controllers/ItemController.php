@@ -6,6 +6,7 @@ use App\Http\Requests\ItemFilterRequest;
 use App\Http\Requests\ItemRequest;
 use App\Http\Resources\ItemResource;
 use App\Services\ItemService;
+use Illuminate\Http\JsonResponse;
 
 class ItemController extends Controller
 {
@@ -17,6 +18,21 @@ class ItemController extends Controller
      */
     public function __construct(protected ItemService $itemService)
     {
+    }
+
+    /**
+     * Obter a contagem de itens por status
+     *
+     * @return JsonResponse
+     */
+    public function getCountsByStatus(): JsonResponse
+    {
+        $counts = $this->itemService->getCountsByStatus();
+
+        return response()->json([
+            'success' => true,
+            'data' => $counts
+        ]);
     }
 
     /**

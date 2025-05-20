@@ -47,10 +47,12 @@ Route::middleware('auth:sanctum')->group(function () {
     /**
      * Items routes
      */
+    Route::get('items/getCountsByStatus', [ItemController::class, 'getCountsByStatus']);
     Route::apiResource('items', ItemController::class);
     Route::prefix('items')->controller(ItemController::class)->group(function () {
         Route::put('restore/{item}', 'restore');
         Route::delete('force-delete/{item}', 'forceDelete');
+
     });
 
     /**

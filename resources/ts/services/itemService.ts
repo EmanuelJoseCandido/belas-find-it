@@ -1,6 +1,7 @@
 import api from "./api";
 
 export const itemService = {
+  getCountsByStatus: () => api.get("/items/getCountsByStatus"),
   getAll: (params?: any) => api.get("/items", { params }),
   getLost: (params: any = {}) =>
     api.get("/items", {

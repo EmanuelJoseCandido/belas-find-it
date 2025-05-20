@@ -688,7 +688,15 @@ const handleSubmit = async (
 const goToItemPage = (): void => {
   showSuccessModal.value = false;
   if (createdItemId.value) {
-    router.push(`/${status.value}s/${createdItemId.value}`);
+    const routeName =
+      status.value === "perdido" ? "details-lost" : "details-findings";
+
+    router.push({
+      name: routeName,
+      params: {
+        id: createdItemId.value.toString(),
+      },
+    });
   }
 };
 

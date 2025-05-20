@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Enums\Essentials\FilePathsEnum;
+use App\Enums\Items\StatusEnum;
 use App\Exceptions\Auth\UnauthorizedException;
 use App\Models\ItemModel;
 use App\Traits\Custom\StringTrait;
@@ -14,6 +15,36 @@ class ItemService
     use VerifyTypeUserTrait, FileTrait, StringTrait;
 
     protected $relations = ['category', 'user', 'claims'];
+
+    /**
+     * Retorna a quantidade de itens para cada status e o total
+     *
+     * @param bool $includeTrashed Indica se deve incluir itens excluídos (soft-deleted)
+     * @return array
+     */
+    public function getCountsByStatus(bool $includeTrashed = false)
+    {
+        $counts = [];
+
+        foreach (StatusEnum::cases() as $status) {
+            $query = ItemModel::query();
+
+            if ($includeTrashed) {
+                $query->withTrashed();
+            }
+
+            $counts[$status->value] = $query->where('status', $status)->count();
+        }
+
+        // Contagem total
+        $query = ItemModel::query();
+        if ($includeTrashed) {
+            $query->withTrashed();
+        }
+        $counts['total'] = $query->count();
+
+        return $counts;
+    }
 
     /**
      * Get all categories from the database
