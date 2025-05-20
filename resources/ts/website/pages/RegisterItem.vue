@@ -10,7 +10,70 @@
         </p>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <!-- Mensagem para usuários não autenticados -->
+      <div
+        v-if="!isAuthenticated"
+        class="bg-white rounded-lg shadow-sm border p-8 mb-8"
+      >
+        <div class="text-center mb-6">
+          <LockIcon class="h-12 w-12 text-primary mx-auto mb-3" />
+          <h2 class="text-2xl font-bold mb-2">Acesso Restrito</h2>
+          <p class="text-muted-foreground max-w-md mx-auto">
+            Para cadastrar um item perdido ou encontrado, é necessário estar
+            logado na plataforma. Isso nos ajuda a:
+          </p>
+        </div>
+
+        <div
+          class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-3xl mx-auto mb-8"
+        >
+          <div class="flex flex-col items-center text-center p-4">
+            <UserIcon class="h-8 w-8 text-primary mb-2" />
+            <h3 class="font-semibold mb-1">Identificar Usuários</h3>
+            <p class="text-sm text-muted-foreground">
+              Garantir a autenticidade das publicações
+            </p>
+          </div>
+
+          <div class="flex flex-col items-center text-center p-4">
+            <MessageSquareIcon class="h-8 w-8 text-primary mb-2" />
+            <h3 class="font-semibold mb-1">Facilitar Contato</h3>
+            <p class="text-sm text-muted-foreground">
+              Permitir comunicação entre as partes interessadas
+            </p>
+          </div>
+
+          <div class="flex flex-col items-center text-center p-4">
+            <ShieldIcon class="h-8 w-8 text-primary mb-2" />
+            <h3 class="font-semibold mb-1">Garantir Segurança</h3>
+            <p class="text-sm text-muted-foreground">
+              Proteger informações e evitar fraudes
+            </p>
+          </div>
+        </div>
+
+        <div class="flex flex-col sm:flex-row justify-center gap-4">
+          <RouterLink
+            :to="{ name: 'auth-login', query: { redirect: route.fullPath } }"
+          >
+            <Button size="lg" class="w-full sm:w-auto">Fazer Login</Button>
+          </RouterLink>
+
+          <RouterLink
+            :to="{
+              name: 'auth-register',
+              query: { redirect: route.fullPath },
+            }"
+          >
+            <Button variant="outline" size="lg" class="w-full sm:w-auto"
+              >Criar Conta</Button
+            >
+          </RouterLink>
+        </div>
+      </div>
+
+      <!-- Conteúdo do formulário (mostrado apenas para usuários autenticados) -->
+      <div v-else class="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div class="md:col-span-2">
           <Form
             @submit="handleSubmit"
@@ -430,7 +493,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
-import { RouterLink, useRouter } from "vue-router";
+import { RouterLink, useRouter, useRoute } from "vue-router";
 import { z } from "zod";
 import { Field, Form, useForm } from "vee-validate";
 import { toFormValidator } from "@vee-validate/zod";
@@ -465,7 +528,6 @@ import {
   Search as SearchIcon,
   Upload as UploadIcon,
   X as XIcon,
-  Info as InfoIcon,
   BadgeCheck as BadgeCheckIcon,
   Camera as CameraIcon,
   MapPin as MapPinIcon,
@@ -473,6 +535,10 @@ import {
   ShieldCheck as ShieldCheckIcon,
   Check as CheckIcon,
   Loader2,
+  Lock as LockIcon,
+  User as UserIcon,
+  MessageSquare as MessageSquareIcon,
+  Shield as ShieldIcon,
 } from "lucide-vue-next";
 import type { ICategory } from "@/admin/types/ICategory";
 import type { TTemStatus } from "@/admin/types/IItem";
@@ -480,6 +546,7 @@ import { categoryService } from "@/services/categoryService";
 
 // Router
 const router = useRouter();
+const route = useRoute();
 const authStore = useAuthStore();
 
 // Estado
@@ -702,23 +769,11 @@ const goToItemPage = (): void => {
 
 // Inicializar
 onMounted(async () => {
-  if (!isAuthenticated.value) {
-    toast({
-      title: "Acesso restrito",
-      description: "É necessário fazer login para cadastrar itens.",
-      variant: "destructive",
-    });
-
-    router.push({
-      name: "auth-login",
-      query: { redirect: router.currentRoute.value.fullPath },
-    });
-    return;
-  }
-
-  // Load authenticated user data
-  if (authStore.user) {
+  // Verificamos o status de autenticação, mas não redirecionamos automaticamente
+  if (isAuthenticated.value) {
+    // Se estiver autenticado, carrega as categorias
     await fetchCategories();
   }
+  // Se não estiver autenticado, exibe a mensagem amigável (controlada pelo v-if no template)
 });
 </script>
