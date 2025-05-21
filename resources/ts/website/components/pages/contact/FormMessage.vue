@@ -1,15 +1,9 @@
 <template>
   <Card>
-    {{ user }}
-
     <CardHeader>
-      <CardTitle>Entre em Contacto</CardTitle>
+      <CardTitle>{{ getCardTitle }}</CardTitle>
       <CardDescription>
-        {{
-          item.status === "perdido"
-            ? "Você encontrou este item? Entre em contacto com o dono."
-            : "Este item é seu? Entre em contacto para recuperá-lo."
-        }}
+        {{ getCardDescription }}
       </CardDescription>
     </CardHeader>
     <CardContent>
@@ -32,7 +26,7 @@
                 :id="field.name"
                 v-bind="field"
                 placeholder="Seu nome"
-                :disabled="user?.isAuthenticated"
+                :disabled="!!user?.isAuthenticated"
                 :class="{ 'border-red-500': errorMessage }"
               />
               <p v-if="errorMessage" class="mt-1 text-sm text-red-600">
@@ -49,7 +43,7 @@
                 type="email"
                 v-bind="field"
                 placeholder="seu@email.com"
-                :disabled="user?.isAuthenticated"
+                :disabled="!!user?.isAuthenticated"
                 :class="{ 'border-red-500': errorMessage }"
               />
               <p v-if="errorMessage" class="mt-1 text-sm text-red-600">
@@ -68,7 +62,7 @@
                 :id="field.name"
                 v-bind="field"
                 placeholder="9xx xxx xxx"
-                :disabled="user?.isAuthenticated"
+                :disabled="!!user?.isAuthenticated"
                 :class="{ 'border-red-500': errorMessage }"
               />
               <p v-if="errorMessage" class="mt-1 text-sm text-red-600">
@@ -78,6 +72,11 @@
           </Field>
         </div>
 
+        <!-- Assunto (oculto, mas com o valor atualizado) -->
+        <Field name="subject" v-slot="{ field }">
+          <input type="hidden" v-bind="field" :value="getSubject" />
+        </Field>
+
         <!-- Mensagem -->
         <div class="space-y-2 mt-4">
           <Field name="message" v-slot="{ field, errorMessage }">
@@ -86,7 +85,7 @@
               <Textarea
                 :id="field.name"
                 v-bind="field"
-                placeholder="Digite sua mensagem..."
+                :placeholder="getMessagePlaceholder"
                 rows="6"
                 :class="{ 'border-red-500': errorMessage }"
               />
@@ -106,7 +105,7 @@
           "
         >
           <Loader2 v-if="isSubmitting" class="mr-2 h-4 w-4 animate-spin" />
-          <span v-else>Enviar Mensagem</span>
+          <span v-else>{{ getButtonText }}</span>
         </Button>
       </Form>
     </CardContent>
@@ -137,12 +136,44 @@ import { toast } from "@/ui/components/toast";
 import type { IItem } from "@/admin/types/IItem";
 import { h } from "vue";
 
-const { user } = useAuthStore();
+const authStore = useAuthStore();
+const user = computed(() => authStore.user);
 const { resetForm } = useForm();
 
 const props = defineProps<{
   item: IItem;
 }>();
+
+// Melhorias de textos com base no status do item
+const getCardTitle = computed(() => {
+  return props.item.status === "perdido"
+    ? "Você encontrou este item?"
+    : "Este item é seu?";
+});
+
+const getCardDescription = computed(() => {
+  return props.item.status === "perdido"
+    ? "Ajude a devolver este item para o seu dono. Entre em contacto utilizando o formulário abaixo."
+    : "Se este item for seu, entre em contacto com quem o encontrou para recuperá-lo.";
+});
+
+const getSubject = computed(() => {
+  return props.item.status === "perdido"
+    ? `Item Perdido: ${props.item.title}`
+    : `Item Encontrado: ${props.item.title}`;
+});
+
+const getMessagePlaceholder = computed(() => {
+  return props.item.status === "perdido"
+    ? "Descreva detalhes específicos do item para confirmar que você realmente o encontrou..."
+    : "Descreva detalhes específicos do item para confirmar que é realmente o proprietário...";
+});
+
+const getButtonText = computed(() => {
+  return props.item.status === "perdido"
+    ? "Informar que encontrei este item"
+    : "Informar que este item é meu";
+});
 
 // Definindo o esquema de validação com Zod
 const contactSchema = toFormValidator(
@@ -159,12 +190,12 @@ const contactSchema = toFormValidator(
   })
 );
 
-// Valores iniciais do formulário
+// Valores iniciais do formulário - garantindo que sejam reativos
 const initialValues = computed(() => ({
-  name: user?.name || "",
-  email: user?.email || "",
-  phone: user?.phone || "",
-  subject: props.item.status,
+  name: user.value?.name || "",
+  email: user.value?.email || "",
+  phone: user.value?.phone || "",
+  subject: getSubject.value,
   message: "",
 }));
 
@@ -178,28 +209,41 @@ const handleSubmit = async (
 
   try {
     await contactService.submit({
-      name: values.name,
-      email: values.email,
-      phone: values.phone,
-      subject: props.item.status,
+      name: values.name || user.value?.name,
+      email: values.email || user.value?.email,
+      phone: values.phone || user.value?.phone,
+      subject: getSubject.value,
       message: values.message,
       item_id: props.item.id,
     });
 
     toast({
-      title: "Mensagem enviada com sucesso!",
+      title: props.item.status === "perdido" ? "Obrigado por encontrar este item!" : "Solicitação de recuperação enviada!",
       description: h(
         "p",
         { class: "text-sm" },
-        "Em breve entraremos em contacto através do e-mail informado."
+        props.item.status === "perdido"
+          ? "O proprietário será notificado e entrará em contacto em breve."
+          : "O responsável pelo item encontrado será notificado e entrará em contacto para confirmar detalhes."
       ),
     });
 
     resetFormContext();
   } catch (error) {
     console.error(error);
+
+    toast({
+      title: "Erro ao enviar mensagem",
+      description: "Ocorreu um erro ao processar sua solicitação. Por favor, tente novamente mais tarde.",
+      variant: "destructive"
+    });
   } finally {
     isSubmitting.value = false;
   }
 };
+
+// Garantir que os dados do usuário estejam disponíveis
+onMounted(() => {
+  console.log("Usuário logado:", user.value);
+});
 </script>
