@@ -9,16 +9,20 @@ class WeSenderService
     /**
      * Send the message
      *
-     * @param  array $destinations
+     * @param  string|array $destinations Número de telefone único ou array de números
      * @param  string $message
-     * @return void
+     * @return mixed
      */
-    public function sendMessage(array $destinations, string $message)
+    public function sendMessage($destinations, string $message)
     {
+        if (!is_array($destinations)) {
+            $destinations = [$destinations];
+        }
+
         return Http::post('https://api.wesender.co.ao/envio/apikey', [
-            'ApiKey'     => config('default.wesender_app_key'),
-            'Destino'    => $destinations,
-            'Mensagem'   => $message,
+            'ApiKey' => config('default.wesender_app_key'),
+            'Destino' => $destinations,
+            'Mensagem' => $message,
             'CEspeciais' => 'false'
         ]);
     }
