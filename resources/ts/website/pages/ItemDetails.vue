@@ -103,94 +103,9 @@
           </div>
         </div>
 
-        <!-- Sidebar com formulário de contato -->
+        <!-- Sidebar com formulário de contacto -->
         <div>
-          <Card>
-            <CardHeader>
-              <CardTitle>Entre em Contato</CardTitle>
-              <CardDescription>
-                {{
-                  item.status === "perdido"
-                    ? "Você encontrou este item? Entre em contato com o dono."
-                    : "Este item é seu? Entre em contato para recuperá-lo."
-                }}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <form @submit.prevent="handleContactSubmit" class="space-y-4">
-                <div>
-                  <Label for="name">Nome Completo</Label>
-                  <Input
-                    id="name"
-                    v-model="contactForm.name"
-                    placeholder="Seu nome"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <Label for="email">E-mail</Label>
-                  <Input
-                    id="email"
-                    v-model="contactForm.email"
-                    type="email"
-                    placeholder="seu@email.com"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <Label for="phone">Telefone</Label>
-                  <Input
-                    id="phone"
-                    v-model="contactForm.phone"
-                    placeholder="(00) 00000-0000"
-                  />
-                </div>
-
-                <div>
-                  <Label for="message">Mensagem</Label>
-                  <Textarea
-                    id="message"
-                    v-model="contactForm.message"
-                    placeholder="Descreva detalhes que comprovem que você é o dono deste item ou explique como encontrou o item perdido..."
-                    rows="4"
-                    required
-                  />
-                </div>
-
-                <Alert
-                  v-if="contactSuccess"
-                  variant="default"
-                  class="mb-4 bg-green-50 text-green-700 border-green-200"
-                >
-                  <CheckCircle2 class="h-4 w-4 mr-2 text-green-600" />
-                  <AlertTitle>Mensagem enviada!</AlertTitle>
-                  <AlertDescription>
-                    Sua mensagem foi enviada com sucesso. Em breve entraremos em
-                    contato.
-                  </AlertDescription>
-                </Alert>
-
-                <Alert v-if="contactError" variant="destructive" class="mb-4">
-                  <AlertTriangleIcon class="h-4 w-4 mr-2" />
-                  <AlertTitle>Erro ao enviar</AlertTitle>
-                  <AlertDescription>
-                    Houve um problema ao enviar sua mensagem. Tente novamente
-                    mais tarde.
-                  </AlertDescription>
-                </Alert>
-
-                <Button type="submit" class="w-full" :disabled="contactLoading">
-                  <Loader2
-                    v-if="contactLoading"
-                    class="mr-2 h-4 w-4 animate-spin"
-                  />
-                  Enviar Mensagem
-                </Button>
-              </form>
-            </CardContent>
-          </Card>
+          <FormMessage :item="item" />
 
           <!-- Info sobre o usuário que cadastrou -->
           <Card class="mt-4">
@@ -237,32 +152,13 @@
 import { ref, computed, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import WebsiteLayout from "@/website/layouts/WebsiteLayout.vue";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/ui/components/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/ui/components/card";
 
 import { Badge } from "@/ui/components/badge";
 import { Button } from "@/ui/components/button";
 
 import { Avatar, AvatarImage, AvatarFallback } from "@/ui/components/avatar";
-
-import { Textarea } from "@/ui/components/textarea";
-
-import { Alert, AlertDescription, AlertTitle } from "@/ui/components/alert";
-
-import { Label } from "@/ui/components/label";
-import { Input } from "@/ui/components/input";
-
-import {
-  ArrowLeft,
-  AlertTriangle as AlertTriangleIcon,
-  CheckCircle2,
-  Loader2,
-} from "lucide-vue-next";
+import { ArrowLeft, AlertTriangle as AlertTriangleIcon } from "lucide-vue-next";
 
 import { itemService } from "@/services/itemService";
 import { categoryService } from "@/services/categoryService";
@@ -270,6 +166,7 @@ import type { ICategory } from "@/admin/types/ICategory";
 import type { IItem } from "@/admin/types/IItem";
 
 import ItemCard from "@/website/components/ItemCard.vue";
+import FormMessage from "@/website/components/pages/contact/FormMessage.vue";
 
 // Router
 const route = useRoute();
@@ -281,17 +178,6 @@ const items = ref<IItem[]>([]);
 const error = ref<string | null>(null);
 const item = ref<IItem | null>(null);
 const categories = ref<ICategory[]>([]);
-
-// Estado do formulário de contato
-const contactForm = ref({
-  name: "",
-  email: "",
-  phone: "",
-  message: "",
-});
-const contactLoading = ref(false);
-const contactSuccess = ref(false);
-const contactError = ref(false);
 
 // Computed
 const imageUrl = computed(() => {
@@ -386,41 +272,6 @@ const fetchCategories = async () => {
   } catch (err: any) {
     console.error("Error fetching categories:", err);
   } finally {
-  }
-};
-
-const handleContactSubmit = async () => {
-  contactLoading.value = true;
-  contactSuccess.value = false;
-  contactError.value = false;
-
-  try {
-    // Em um ambiente real, faríamos uma requisição à API
-    // const response = await fetch('/api/contact', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify({
-    //     itemId: item.value.id,
-    //     ...contactForm.value
-    //   })
-    // });
-    // if (!response.ok) throw new Error('Erro ao enviar mensagem');
-
-    // Simulando requisição
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-
-    contactSuccess.value = true;
-    contactForm.value = {
-      name: "",
-      email: "",
-      phone: "",
-      message: "",
-    };
-  } catch (err) {
-    console.error("Erro ao enviar mensagem:", err);
-    contactError.value = true;
-  } finally {
-    contactLoading.value = false;
   }
 };
 

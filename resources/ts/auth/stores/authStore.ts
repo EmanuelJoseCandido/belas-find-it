@@ -8,7 +8,7 @@ import type {
   IRegisterUser,
   ILoginCredentials,
   IAuthResponse,
-  IProfileUser,
+  IUpdateProfileUser,
 } from "@/auth/types/UserInterface";
 
 export const useAuthStore = defineStore("auth", () => {
@@ -46,7 +46,7 @@ export const useAuthStore = defineStore("auth", () => {
     }
   }
 
-  async function updateProfile(profileData: IProfileUser): Promise<IUser> {
+  async function updateProfile(profileData: IUpdateProfileUser): Promise<IUser> {
     loading.value = true;
     error.value = null;
     try {
@@ -161,6 +161,7 @@ export const useAuthStore = defineStore("auth", () => {
     login,
     logout,
     getMe,
+    setData,
     updateProfile,
     updatePassword,
     register,
