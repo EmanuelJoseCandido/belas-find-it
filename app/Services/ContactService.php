@@ -61,10 +61,10 @@ class ContactService
                 $contactPhone = $attributes['phone'];
 
                 if ($itemStatus === 'perdido') {
-                    $message = "Olá! Temos boas notícias! {$contactName} informou que encontrou seu item '{$itemTitle}' que você reportou como perdido. Entre em contacto através do telefone {$contactPhone} para mais detalhes e combinar a devolução.";
+                    $message = "Olá! Temos boas notícias " . $contactName . " informou que encontrou seu item " . $itemTitle . " que você reportou como perdido. Entre em contacto através do telefone " . $contactPhone . " para mais detalhes e combinar a devolução.";
                 } else {
 
-                    $message = "Olá! {$contactName} entrou em contacto sobre o item '{$itemTitle}' que você encontrou. Esta pessoa afirma ser o proprietário. Entre em contacto através do telefone {$contactPhone} para verificar os detalhes e combinar a devolução.";
+                    $message = "Olá! " . $contactName . " entrou em contacto sobre o item " . $itemTitle . " que você encontrou. Esta pessoa afirma ser o proprietário. Entre em contacto através do telefone " . $contactPhone . " para verificar os detalhes e combinar a devolução.";
                 }
 
                 $this->weSenderService->sendMessage($user->phone, $message);

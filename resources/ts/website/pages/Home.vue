@@ -302,10 +302,10 @@ const recentItems = ref<any[]>([]);
 
 // Estatísticas
 const stats = ref({
-  totalItems: 124,
-  lostItems: 58,
-  foundItems: 42,
-  recoveredItems: 24,
+  totalItems: 0,
+  lostItems: 0,
+  foundItems: 0,
+  recoveredItems: 0,
 });
 
 // Depoimentos

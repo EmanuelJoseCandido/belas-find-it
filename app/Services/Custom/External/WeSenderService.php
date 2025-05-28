@@ -26,7 +26,7 @@ class WeSenderService
                 'ApiKey' => config('default.wesender_app_key'),
                 'Destino' => $destinations,
                 'Mensagem' => $message,
-                'CEspeciais' => 'true'
+                'CEspeciais' => 'false'
             ]);
 
             if (!$response->successful()) {
