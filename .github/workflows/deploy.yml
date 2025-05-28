@@ -17,8 +17,8 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: "8.2"
-          extensions: mbstring, xml, ctype, iconv, intl, pdo_sqlite, dom, filter, gd, iconv, json, mbstring, pdo
+          php-version: "8.3" # ← Corrigido para 8.3
+          extensions: mbstring, xml, ctype, iconv, intl, pdo_mysql, dom, filter, gd, json, pdo, zip, bcmath
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -37,11 +37,11 @@ jobs:
       - name: Install npm dependencies
         run: pnpm install
 
+      - name: Generate key (temporary for build)
+        run: php artisan key:generate
+
       - name: Build assets
         run: pnpm run build
-
-      - name: Generate key
-        run: php artisan key:generate
 
       - name: Deploy to VPS
         uses: appleboy/ssh-action@v1.0.3
@@ -55,10 +55,29 @@ jobs:
             composer install --optimize-autoloader --no-dev
             pnpm install
             pnpm run build
+
+            # Configurar .env se não existir
+            if [ ! -f .env ]; then
+              cp .env.example .env
+              php artisan key:generate
+            fi
+
+            # Atualizar configurações .env
+            sed -i "s/DB_CONNECTION=.*/DB_CONNECTION=mysql/" .env
+            sed -i "s/DB_HOST=.*/DB_HOST=127.0.0.1/" .env
+            sed -i "s/DB_PORT=.*/DB_PORT=3306/" .env
+            sed -i "s/DB_DATABASE=.*/DB_DATABASE=${{ secrets.DB_DATABASE }}/" .env
+            sed -i "s/DB_USERNAME=.*/DB_USERNAME=${{ secrets.DB_USERNAME }}/" .env
+            sed -i "s/DB_PASSWORD=.*/DB_PASSWORD=${{ secrets.DB_PASSWORD }}/" .env
+            sed -i "s/APP_ENV=.*/APP_ENV=production/" .env
+            sed -i "s/APP_DEBUG=.*/APP_DEBUG=false/" .env
+            sed -i "s|APP_URL=.*|APP_URL=https://belasfindit.emanuelcandido.dev|" .env
+
             php artisan migrate --force
             php artisan config:cache
             php artisan route:cache
             php artisan view:cache
+
             sudo chown -R www-data:www-data ${{ secrets.VPS_PATH }}
             sudo chmod -R 755 ${{ secrets.VPS_PATH }}
             sudo chmod -R 775 ${{ secrets.VPS_PATH }}/storage
