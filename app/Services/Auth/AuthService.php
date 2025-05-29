@@ -66,7 +66,7 @@ class AuthService
         if (!Auth::attempt($credentials))
             throw new LoginInvalidException();
 
-        if ($this->verifyActiveStatus()) {
+        if (!$this->verifyActiveStatus()) {
             $this->logout();
             throw new UserInactiveException();
         }
