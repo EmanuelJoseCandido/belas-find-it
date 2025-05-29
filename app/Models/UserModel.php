@@ -58,7 +58,7 @@ class UserModel extends Authenticatable
             'password' => 'hashed',
             'gender' => GenderEnum::class,
             'role' => RoleEnum::class,
-            'is_blocked' => 'boolean',
+            'is_active' => 'boolean',
         ];
     }
 
