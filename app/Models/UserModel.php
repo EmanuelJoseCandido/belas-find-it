@@ -11,7 +11,7 @@ use Laravel\Sanctum\HasApiTokens;
 
 class UserModel extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
+    /** @use HasFactory<\Database\Factories\UserModelFactory> */
     use HasFactory, Notifiable, HasApiTokens, SoftDeletes;
 
     /**
